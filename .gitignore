@@ -23,3 +23,6 @@
 *.synctex.gz
 *.nav
 *.snm
+*.tex.backup
+*.vrb
+*.vpp~*
