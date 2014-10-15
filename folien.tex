@@ -37,7 +37,8 @@
  \begin{itemize}
   \item Das GoF State Pattern ist das meist genutzte State Pattern
   \item Die klassiche GoF Implementierung hat einige schw\"achen
-  \item bspw. hoher speicherverbrauch, da jeder State im Speicher gehalten werden muss, auch wenn diese eigentlich nicht verwendet werden
+  \item Bspw. hoher Speicherverbrauch, da jeder State im Speicher gehalten werden muss, auch wenn diese eigentlich nicht verwendet werden
+  \item Der h\"ohere Speicherverbrauch kann allerdings mit dem Placement New Operator umgangen werden
  \end{itemize}
 \end{frame}
 
@@ -45,6 +46,16 @@
 \begin{frame}
  \frametitle{GoF State Pattern Struktur}
  \includegraphics[scale=.6]{img/fsm_gof.jpg}
+\end{frame}
+
+%% GoF fsm Systemgrenzen
+\begin{frame}
+ \frametitle{Systemgrenzen}
+\end{frame}
+
+%% GoF fsm Automat
+\begin{frame}
+ \frametitle{Automat}
 \end{frame}
 
 %% GoF fsm States in Code I
@@ -102,7 +113,7 @@
 
 %% GoF fsm Kontext Klasse
 \begin{frame}
- \frametitle{GoF Konext Klasse}
+ \frametitle{GoF Kontext Klasse}
  \begin{itemize}
   \item Sicht von au{\ss}en auf die FSM
   \item Dient als Delegator zu den States
@@ -135,6 +146,21 @@
  \end{lstlisting}
 \end{frame}
 
+%% Schritte zum erstellen einer FSM
+\begin{frame}
+ \frametitle{Schritte zum erstellen einer FSM}
+ \begin{enumerate}
+  \item Erstellen der Systemgrenzen
+  \item Erstellen eines FSM Diagramms
+  \item Umwandlung in Code
+  \item Pr\"ufen ob Code und Systemgrenzen/Diagramm zusammenpassen
+  \begin{itemize}
+   \item Sind alle Eingangssignale als Funktionen zu finden?
+   \item Werden alle Ausgangssignale verwendet/ausgegeben?
+   \item Die Namen f\"ur Eingangssignale/Ausgangssignale sollten konsistent sein, da Fehler sonst vorprogrammiert!
+  \end{itemize}
+ \end{enumerate}
+\end{frame}
 
 %% Externe Statevariablen
 \begin{frame}

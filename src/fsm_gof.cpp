@@ -26,11 +26,13 @@ struct conveyor {
 #include <iostream>
 using namespace std;
 
+// transition running -> stopped
 void running::stop() {
   new (this) stopped;
   cout << "stop() / stop" << endl;
 }
 
+// transition stopped -> running
 void stopped::start() {
   new (this) running;
   cout << "start() / run" << endl;
