@@ -31,21 +31,26 @@
  \end{itemize}
 \end{frame}
 
-%% Grundlagen GoF
-\begin{frame}
- \frametitle{Grundlagen GoF}
- \begin{itemize}
-  \item Das GoF State Pattern ist das meist genutzte State Pattern
-  \item Die klassiche GoF Implementierung hat einige schw\"achen
-  \item Bspw. hoher Speicherverbrauch, da jeder State im Speicher gehalten werden muss, auch wenn diese eigentlich nicht verwendet werden
-  \item Der h\"ohere Speicherverbrauch kann allerdings mit dem Placement New Operator umgangen werden
- \end{itemize}
-\end{frame}
-
 %% GoF fsm Beispiel (Klassendiagramm)
 \begin{frame}
  \frametitle{GoF State Pattern Struktur}
  \includegraphics[scale=.6]{img/fsm_gof.jpg}
+ \begin{itemize}
+  \item Kontext-Klasse (conveyor)
+  \item Zustands Basisklasse (state)
+  \item Zust\"ande (running, stopped)
+ \end{itemize}
+\end{frame}
+
+%% Grundlagen GoF
+\begin{frame}
+ \frametitle{Grundlagen GoF}
+ Die klassiche GoF Implementierung hat einige schw\"achen
+ \begin{itemize}
+  \item Hoher Speicherverbrauch, da jeder State im Speicher gehalten werden muss, auch wenn diese eigentlich nicht verwendet werden
+  \item Der h\"ohere Speicherverbrauch kann allerdings mit dem Placement New Operator umgangen werden
+  \item Kontext muss eventuell immer mit \"ubergeben werden
+ \end{itemize}
 \end{frame}
 
 %% GoF fsm Systemgrenzen
@@ -63,14 +68,15 @@
  \frametitle{GoF States in Code I}
  \begin{itemize}
   \item Alle States erben von einer Oberstate Klasse
-  \item Der Oberstate implementiert alle funktionen aller States als virtuelle Funktion
-  \item Der jeweilige Status implementiert nur seine eigenen Funktionen
+  \item Der Oberstate implementiert alle Events aller Zustände als leere virtuelle Funktion
+  \item Der jeweilige Zustand implementiert nur seine eigenen Events, nicht relevante
+  Events werden an die leeren Methoden der Basisklasse weitergereicht
  \end{itemize}
 \end{frame}
 
-%% GoF fsm States in Code II (Header)
+%% GoF fsm States in Code (Header)
 \begin{frame}[fragile]
- \frametitle{GoF States in Code II (Header)}
+ \frametitle{GoF States in Code (Header)}
  \begin{lstlisting}
   struct state {
     virtual ~state() { }
@@ -88,9 +94,9 @@
  \end{lstlisting}
 \end{frame}
 
-%% GoF fsm States in Code III (Implementierung/CPP)
+%% GoF fsm States in Code (Implementierung/CPP)
 \begin{frame}[fragile]
- \frametitle{GoF States in Code III}
+ \frametitle{GoF States in Code (Implementierung)}
  \begin{lstlisting}
   // transition running -> stopped
   void running::stop() {
@@ -105,11 +111,6 @@
   }
  \end{lstlisting}
 \end{frame}
-
-%% Placement new operator
-%\begin{frame}[fragile]
-% \frametitle{Placement new operator}
-%\end{frame}
 
 %% GoF fsm Kontext Klasse
 \begin{frame}
@@ -135,7 +136,7 @@
     state* m_state;
   };
  \end{lstlisting}
- CPP:
+ Implementierung:
  \begin{lstlisting}
   void conveyor::start() {
     m_state->start();
@@ -151,8 +152,13 @@
  \frametitle{Schritte zum erstellen einer FSM}
  \begin{enumerate}
   \item Erstellen der Systemgrenzen
-  \item Erstellen eines FSM Diagramms
+  \item Erstellen einer FSM
   \item Umwandlung in Code
+  \begin{itemize}
+   \item Kontextklasse, Funktionsnamen als Eingangssignale
+   \item Basisklasse für Zustände erstellen
+   \item Zustandsklassen erben von der Basisklasse und implementieren nur die eigenen Reaktionen neu
+  \end{itemize}
   \item Pr\"ufen ob Code und Systemgrenzen/Diagramm zusammenpassen
   \begin{itemize}
    \item Sind alle Eingangssignale als Funktionen zu finden?
