@@ -251,9 +251,32 @@ void conveyor::stop() {
 
 \end{frame}
 
-%% Conditions/Guards/Choice Points
+%% Guards
 \begin{frame}
- \frametitle{Conditions/Guards/Choice Points}
+ \frametitle{Guards}
+ Guard Automat:
+\end{frame}
+
+%% Guard Implementierung
+\begin{frame}[fragile]
+ \frametitle{Guards Implementierung}
+ Implementierung:
+  \begin{lstlisting}
+// transition stopped -> running
+void stopped::start(conveyor* context) {
+  ++context->m_count_started;
+  if (context->m_count_started <= 2) {
+    new (this) running;
+  } else {
+    return;
+  }
+}
+  \end{lstlisting}
+\end{frame}
+
+%% Choice Points
+\begin{frame}
+ \frametitle{Choice Points}
 \end{frame}
 
 %% Übung Guards
