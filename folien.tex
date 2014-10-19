@@ -171,6 +171,82 @@
 %% Externe Statevariablen
 \begin{frame}
  \frametitle{Externe Statevariablen}
+  \includegraphics[scale=.44]{img/fsm_externe_state_var.jpg}
+\end{frame}
+
+%% Implementierung von externen Statevariablen I
+\begin{frame}[fragile]
+ \frametitle{Implementierung von externen Statevariablen I}
+ \begin{lstlisting}
+struct conveyor {
+  friend struct running;
+  friend struct stopped;
+  conveyor()
+      : m_state(new stopped),
+        m_count_stopped(0),
+        m_count_started(0) { }
+  ~conveyor() { delete m_state; }
+  void start();
+  void stop();
+ private:
+  state* m_state;
+  int m_count_stopped;
+  int m_count_started;
+};
+\end{lstlisting}
+\end{frame}
+
+%% Implementierung von externen Statevariablen II
+\begin{frame}[fragile]
+  \frametitle{Implementierung von externen Statevariablen II}
+  Header:
+  \begin{lstlisting}
+struct state {
+  virtual ~state() { }
+  virtual void start(conveyor* context) { }
+  virtual void stop(conveyor* context) { }
+};
+
+struct running : public state {
+  void stop(conveyor* context);
+};
+
+struct stopped : public state {
+  void start(conveyor* context);
+};
+  \end{lstlisting}
+
+\end{frame}
+
+
+%% Implementierung von externen Statevariablen III
+\begin{frame}[fragile]
+  \frametitle{Implementierung von externen Statevariablen III}
+  Implementierung:
+  \begin{lstlisting}
+// transition running -> stopped
+void running::stop(conveyor* context) {
+  ++context->m_count_stopped;
+  new (this) stopped;
+}
+// transition stopped -> running
+void stopped::start(conveyor* context) {
+  ++context->m_count_started;
+  new (this) running;
+}
+void conveyor::start() {
+  m_state->start(this);
+}
+void conveyor::stop() {
+  m_state->stop(this);
+}
+  \end{lstlisting}
+
+\end{frame}
+
+%% Conditions/Guards/Choice Points
+\begin{frame}
+ \frametitle{Conditions/Guards/Choice Points}
 \end{frame}
 
 %% Entry/Exit Code 1
@@ -321,10 +397,6 @@
 	\end{itemize}
 \end{frame}
 
-%% Conditions/Guards/Choice Points
-\begin{frame}
- \frametitle{Conditions/Guards/Choice Points}
-\end{frame}
 
 %% Timer
 \begin{frame}
