@@ -1,24 +1,27 @@
 // <-- HEADER
+class conveyor;
 
-struct conveyor;
-
-struct state {
+class state {
+ public:
   virtual ~state() { }
   virtual void start(conveyor* context) { }
   virtual void stop(conveyor* context) { }
 };
 
-struct running : public state {
+class running : public state {
+ public:
   void stop(conveyor* context);
 };
 
-struct stopped : public state {
+class stopped : public state {
+ public:
   void start(conveyor* context);
 };
 
-struct conveyor {
+class conveyor {
   friend struct running;
   friend struct stopped;
+ public:
   conveyor()
       : m_state(new stopped),
         m_count_stopped(0),

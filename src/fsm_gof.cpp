@@ -1,19 +1,23 @@
 // <-- HEADER
-struct state {
+class state {
+ public:
   virtual ~state() { }
   virtual void start() { }
   virtual void stop() { }
 };
 
-struct running : public state {
+class running : public state {
+ public:
   void stop();
 };
 
-struct stopped : public state {
+class stopped : public state {
+ public:
   void start();
 };
 
-struct conveyor {
+class conveyor {
+ public:
   conveyor() : m_state(new stopped) { }
   ~conveyor() { delete m_state; }
   void start();
