@@ -4,7 +4,7 @@
 \usepackage{graphicx} % fuer Bilder
 \usepackage{listings} % fuer Code
 
-\usetheme{Goettingen}
+%\usetheme{Goettingen}
 
 \lstset{
   language=C++, % fuer c++ code style
@@ -82,19 +82,22 @@
 \begin{frame}[fragile]
  \frametitle{GoF States in Code (Header)}
  \begin{lstlisting}
-  struct state {
+class state {
+ public:
   virtual ~state() { }
   virtual void start() { }
   virtual void stop() { }
-  };
+};
 
-  struct running : public state {
+class running : public state {
+ public:
   void stop();
-  };
+};
 
-  struct stopped : public state {
+struct stopped : public state {
+public:
   void start();
-  };
+};
  \end{lstlisting}
 \end{frame}
 
@@ -102,17 +105,17 @@
 \begin{frame}[fragile]
  \frametitle{GoF States in Code (Implementierung)}
  \begin{lstlisting}
-  // transition running -> stopped
-  void running::stop() {
+// transition running -> stopped
+void running::stop() {
   new (this) stopped;
   cout << "stop() / stop" << endl;
-  }
+}
 
-  // transition stopped -> running
-  void stopped::start() {
+// transition stopped -> running
+void stopped::start() {
   new (this) running;
   cout << "start() / run" << endl;
-  }
+}
  \end{lstlisting}
 \end{frame}
 
@@ -131,23 +134,24 @@
  \frametitle{GoF Kontext Klasse in Code}
  Header:
  \begin{lstlisting}
-  struct conveyor {
+class conveyor {
+ public:
   conveyor() : m_state(new stopped) { }
   ~conveyor() { delete m_state; }
   void start();
   void stop();
-   private:
+ private:
   state* m_state;
-  };
+};
  \end{lstlisting}
  Implementierung:
  \begin{lstlisting}
-  void conveyor::start() {
+void conveyor::start() {
   m_state->start();
-  }
-  void conveyor::stop() {
+}
+void conveyor::stop() {
   m_state->stop();
-  }
+}
  \end{lstlisting}
 \end{frame}
 
@@ -188,13 +192,14 @@
 \begin{frame}[fragile]
  \frametitle{Implementierung von externen Statevariablen I}
  \begin{lstlisting}
-struct conveyor {
+class conveyor {
   friend struct running;
   friend struct stopped;
+ public:
   conveyor()
-  : m_state(new stopped),
-  m_count_stopped(0),
-  m_count_started(0) { }
+      : m_state(new stopped),
+        m_count_stopped(0),
+        m_count_started(0) { }
   ~conveyor() { delete m_state; }
   void start();
   void stop();
@@ -211,21 +216,23 @@ struct conveyor {
   \frametitle{Implementierung von externen Statevariablen II}
   Header:
   \begin{lstlisting}
-struct state {
+class state {
+ public:
   virtual ~state() { }
   virtual void start(conveyor* context) { }
   virtual void stop(conveyor* context) { }
 };
 
-struct running : public state {
+class running : public state {
+ public:
   void stop(conveyor* context);
 };
 
-struct stopped : public state {
+class stopped : public state {
+ public:
   void start(conveyor* context);
 };
   \end{lstlisting}
-
 \end{frame}
 
 %% Implementierung von externen Statevariablen III
@@ -268,9 +275,9 @@ void conveyor::stop() {
 void stopped::start(conveyor* context) {
   ++context->m_count_started;
   if (context->m_count_started <= 2) {
-  new (this) running;
+    new (this) running;
   } else {
-  return;
+    return;
   }
 }
   \end{lstlisting}
@@ -309,12 +316,12 @@ void stopped::start(conveyor* context) {
 \begin{frame}[fragile]
   \frametitle{Entry/Exit Code in HSM }
   \begin{lstlisting}
-  //State S12 erhaelt Signal e
-  void StateS12::sigE() {
+//State S12 erhaelt Signal e
+void StateS12::sigE() {
   exit();
   new (this) StateS1;
   sigE();
-  }
+}
   \end{lstlisting}
   \begin{itemize}
   \item die exit-Funktion ist in jedem Zustand definiert
@@ -336,20 +343,18 @@ void stopped::start(conveyor* context) {
 \begin{frame}[fragile]
   \frametitle{Entry/Exit Code in HSM }
   \begin{lstlisting}
-  //State S1 erhaelt Signal b
-  void StateS1::init(T* t){
+//State S1 erhaelt Signal b
+void StateS1::init(T* t){
   //t ist ein Pointer auf die Kontextklasse
-  void* history =
-  t->getStateFromHistory(StateS1ID);
+  void* history = t->getStateFromHistory(StateS1ID);
   if(history != 0){
     memcpy(this, &history, 4);
-  }
-  else{
+  } else {
     new (this) StateS12;
     entry();
   }
   init();
-  }
+}
   \end{lstlisting}
 \end{frame}
 
@@ -359,7 +364,6 @@ void stopped::start(conveyor* context) {
   \item die entry-Funktion ist in jedem Zustand definiert
   \item init() f\"uhrt dazu, dass -sofern ein Substate bereits in der History vorliegt- dieser direkt betreten wird; ansonsten wird er neu erzeugt
   \item der erneute init()-Aufruf darf in der vorletzten bzw. letzten Hierarchie-Ebene nicht stattfinden (ansonsten Endlosschleife) ????????? korrekt??
-
   \end{itemize}
 \end{frame}
 
@@ -384,9 +388,8 @@ void stopped::start(conveyor* context) {
 //StateS1 history-Funktion
 voidS StateS1::history(T* t){
   //t ist ein Pointer auf die Kontextklasse
-  t->
-  setHistory(State::StateID::StateS1_ID,
-  this);
+  t->setHistory(State::StateID::StateS1_ID,
+                this);
 }
   \end{lstlisting}
   \begin{itemize}
@@ -401,9 +404,9 @@ voidS StateS1::history(T* t){
   \item setHistory in der Kontextklasse:
   \end{itemize}
   \begin{lstlisting}
-  void setHistory(int ID, State* ptr){
+void setHistory(int ID, State* ptr){
   history_[ID] = *((void**) ptr);
-  }
+}
   \end{lstlisting}
   \begin{itemize}
   \item ptr wird zun\"achst auf void** gecastet, damit man mit einer weiteren Dereferenzierung * an die virtuelle Funktionstabelle des Zustands gelangt
@@ -417,9 +420,9 @@ voidS StateS1::history(T* t){
   \item getStateFromHistory in der Kontextklasse:
   \end{itemize}
   \begin{lstlisting}
-  void* getStateFromHistory(int ID){
+void* getStateFromHistory(int ID){
   return history_[ID];
-  }
+}
   \end{lstlisting}
   \begin{itemize}
   \item \"uber seine ID kann der Zustand sich seine History -sofern eine vorliegt- aus der History-Tabelle in der Kontextklasse holen
