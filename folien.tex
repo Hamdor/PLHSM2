@@ -3,12 +3,22 @@
 \usepackage[ngerman]{babel}
 \usepackage{graphicx} % fuer Bilder
 \usepackage{listings} % fuer Code
+\usepackage{lmodern}
 
 %\usetheme{Goettingen}
 
+%% Formatierung des Sourcecodes
+\DeclareFontShape{OT1}{cmtt}{bx}{n}{<5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>cmttb10}{}
+\definecolor{eclipse-violet}{rgb}{0.50, 0.0, 0.46}
+\definecolor{eclipse-green}{rgb}{0.25, 0.50, 0.37}
+\definecolor{eclipse-blue}{rgb}{0.17, 0.0, 1.00}
 \lstset{
-  language=C++, % fuer c++ code style
-  basicstyle=\small
+ language=C++, % fuer c++ code style
+ showstringspaces=false,
+ basicstyle=\ttfamily\small,
+ keywordstyle=\bfseries\color{eclipse-violet},
+ commentstyle=\color{eclipse-green},
+ stringstyle=\color{eclipse-blue}
 }
 
 \title{Prozesslenkung: Hierarchische Zustandsautomaten II}
@@ -17,8 +27,9 @@
 \date{\today}
 
 \begin{document}
+
 \begin{frame}
-\titlepage
+ \titlepage
 \end{frame}
 
 %% Themen uebersicht
@@ -94,8 +105,8 @@ class running : public state {
   void stop();
 };
 
-struct stopped : public state {
-public:
+class stopped : public state {
+ public:
   void start();
 };
  \end{lstlisting}
@@ -149,6 +160,7 @@ class conveyor {
 void conveyor::start() {
   m_state->start();
 }
+
 void conveyor::stop() {
   m_state->stop();
 }
@@ -176,7 +188,7 @@ void conveyor::stop() {
  \end{enumerate}
 \end{frame}
 
-%% Übung GoF
+%% �bung GoF
 \begin{frame}
  \frametitle{\"Ubung Lichtschalter}
  Erstellt die Systemgrenzen, Automatendiagramm, und Code eines Lichtschalters (An und Aus Button). (15 Min)
@@ -185,7 +197,7 @@ void conveyor::stop() {
 %% Externe Statevariablen
 \begin{frame}
  \frametitle{Externe Statevariablen}
-  \includegraphics[scale=.44]{img/fsm_externe_state_var.jpg}
+ \includegraphics[scale=.44]{img/fsm_externe_state_var.jpg}
 \end{frame}
 
 %% Implementierung von externen Statevariablen I
@@ -213,9 +225,9 @@ class conveyor {
 
 %% Implementierung von externen Statevariablen II
 \begin{frame}[fragile]
-  \frametitle{Implementierung von externen Statevariablen II}
-  Header:
-  \begin{lstlisting}
+ \frametitle{Implementierung von externen Statevariablen II}
+ Header:
+ \begin{lstlisting}
 class state {
  public:
   virtual ~state() { }
@@ -232,32 +244,34 @@ class stopped : public state {
  public:
   void start(conveyor* context);
 };
-  \end{lstlisting}
+ \end{lstlisting}
 \end{frame}
 
 %% Implementierung von externen Statevariablen III
 \begin{frame}[fragile]
-  \frametitle{Implementierung von externen Statevariablen III}
-  Implementierung:
-  \begin{lstlisting}
+ \frametitle{Implementierung von externen Statevariablen III}
+ Implementierung:
+ \begin{lstlisting}
 // transition running -> stopped
 void running::stop(conveyor* context) {
   ++context->m_count_stopped;
   new (this) stopped;
 }
+
 // transition stopped -> running
 void stopped::start(conveyor* context) {
   ++context->m_count_started;
   new (this) running;
 }
+
 void conveyor::start() {
   m_state->start(this);
 }
+
 void conveyor::stop() {
   m_state->stop(this);
 }
-  \end{lstlisting}
-
+ \end{lstlisting}
 \end{frame}
 
 %% Guards
@@ -270,17 +284,19 @@ void conveyor::stop() {
 \begin{frame}[fragile]
  \frametitle{Guards Implementierung}
  Implementierung:
-  \begin{lstlisting}
+ \begin{lstlisting}
 // transition stopped -> running
 void stopped::start(conveyor* context) {
+
   ++context->m_count_started;
+
   if (context->m_count_started <= 2) {
     new (this) running;
   } else {
     return;
   }
 }
-  \end{lstlisting}
+ \end{lstlisting}
 \end{frame}
 
 %% Choice Points
@@ -288,66 +304,68 @@ void stopped::start(conveyor* context) {
  \frametitle{Choice Points}
 \end{frame}
 
-%% Übung Guards
+%% �bung Guards
 \begin{frame}
  \frametitle{\"Ubung Lichtschalter II}
 \end{frame}
 
 %% Entry/Exit Code 1
 \begin{frame}
-  \frametitle{Entry/Exit Code in HSM }
-  \begin{itemize}
+ \frametitle{Entry/Exit Code in HSM }
+ \begin{itemize}
   \item Zustandswechsel d\"urfen Hierarchieebenen nicht \"uberspringen
   \item exit() wird durchgef\"uhrt, wenn Signale in der Hierarchie "nach oben" weitergereicht werden
   \item entry() wird  durchgef\"uhrt, wenn Signale in der Hierarchie "nach unten" weitergereicht werden
-  \end{itemize}
+ \end{itemize}
 \end{frame}
 
 %% Entry/Exit Code 2
 \begin{frame}
-  \frametitle{Entry/Exit Code in HSM }
-  \begin{itemize}
-  \item Beispiel exit: State S12 erh\"alt Signal e
-  \end{itemize}
+ \frametitle{Entry/Exit Code in HSM }
+ \begin{itemize}
+  \item Beispiel exit: State S12 erh\"alt Signal e\newline\newline
   \includegraphics[scale=.6]{img/beispiel_exitSM}
+ \end{itemize}
 \end{frame}
 
 %% Exit Code 3
 \begin{frame}[fragile]
-  \frametitle{Entry/Exit Code in HSM }
-  \begin{lstlisting}
-//State S12 erhaelt Signal e
-void StateS12::sigE() {
-  exit();
-  new (this) StateS1;
-  sigE();
-}
-  \end{lstlisting}
-  \begin{itemize}
+ \frametitle{Entry/Exit Code in HSM }
+ \begin{lstlisting}
+ //State S12 erhaelt Signal e
+ void StateS12::sigE() {
+   exit();
+   new (this) StateS1;
+   sigE();
+ }
+ \end{lstlisting}
+ \begin{itemize}
   \item die exit-Funktion ist in jedem Zustand definiert
   \item wenn auch der Top-Zustand nicht auf ein Signal reagiert, sollte dieser z.B. eine
   failure-Methode haben, um den Fehler anzuzeigen
-  \end{itemize}
+ \end{itemize}
 \end{frame}
 
 %% Entry Code 1
 \begin{frame}
-  \frametitle{Entry/Exit Code in HSM  }
-  \begin{itemize}
-  \item Beispiel entry: State S1 erh\"alt Signal b
-  \end{itemize}
+ \frametitle{Entry/Exit Code in HSM  }
+ \begin{itemize}
+  \item Beispiel entry: State S1 erh\"alt Signal b\newline\newline
   \includegraphics[scale=.6]{img/beispiel_entrySM}
+ \end{itemize}
 \end{frame}
 
 %% Entry Code 2
 \begin{frame}[fragile]
-  \frametitle{Entry/Exit Code in HSM }
-  \begin{lstlisting}
+ \frametitle{Entry/Exit Code in HSM }
+ \begin{lstlisting}
 //State S1 erhaelt Signal b
-void StateS1::init(T* t){
+void StateS1::init(T* t) {
+
   //t ist ein Pointer auf die Kontextklasse
   void* history = t->getStateFromHistory(StateS1ID);
-  if(history != 0){
+
+  if(history != 0) {
     memcpy(this, &history, 4);
   } else {
     new (this) StateS12;
@@ -355,78 +373,79 @@ void StateS1::init(T* t){
   }
   init();
 }
-  \end{lstlisting}
+ \end{lstlisting}
 \end{frame}
 
 %% Entry Code 3
 \begin{frame}[fragile]
-  \begin{itemize}
+ \begin{itemize}
   \item die entry-Funktion ist in jedem Zustand definiert
   \item init() f\"uhrt dazu, dass -sofern ein Substate bereits in der History vorliegt- dieser direkt betreten wird; ansonsten wird er neu erzeugt
   \item der erneute init()-Aufruf darf in der vorletzten bzw. letzten Hierarchie-Ebene nicht stattfinden (ansonsten Endlosschleife) ????????? korrekt??
-  \end{itemize}
+ \end{itemize}
 \end{frame}
 
 %% History 1
 \begin{frame}
-  \frametitle{History}
-  \begin{itemize}
+ \frametitle{History}
+ \begin{itemize}
   \item Implementierung der flachen History
   \item die history-Funktion  wird in der exit-Funktion aufgerufen
   \item die Kontextklasse h\"alt ein History- Array,
-   in dem sich die Subzust\"ande mittels history-Aufruf eintragen (Index-Zuordnung z.B. \"uber enums)
-  \end{itemize}
+  in dem sich die Subzust\"ande mittels history-Aufruf eintragen (Index-Zuordnung z.B. \"uber enums)
+ \end{itemize}
 \end{frame}
 
 %% History 2
 \begin{frame}[fragile]
-  \frametitle{History}
-  \begin{itemize}
+ \frametitle{History}
+ \begin{itemize}
   \item Beispiel: S1 tr\"agt sich in History-Tabelle ein
-  \end{itemize}
-  \begin{lstlisting}
-//StateS1 history-Funktion
-voidS StateS1::history(T* t){
-  //t ist ein Pointer auf die Kontextklasse
-  t->setHistory(State::StateID::StateS1_ID,
-                this);
-}
-  \end{lstlisting}
-  \begin{itemize}
+ \end{itemize}
+ \begin{lstlisting}
+  //StateS1 history-Funktion
+  voidS StateS1::history(T* t) {
+
+    //t ist ein Pointer auf die Kontextklasse
+    t->setHistory(State::StateID::StateS1_ID,
+                  this);
+  }
+ \end{lstlisting}
+ \begin{itemize}
   \item der Parameter StateS1ID gibt den Index in der History-Tabelle in der Kontextklasse an
-  \end{itemize}
+ \end{itemize}
 \end{frame}
 
 %% History 3
 \begin{frame}[fragile]
-  \frametitle{History}
-  \begin{itemize}
+ \frametitle{History}
+ \begin{itemize}
   \item setHistory in der Kontextklasse:
-  \end{itemize}
-  \begin{lstlisting}
-void setHistory(int ID, State* ptr){
-  history_[ID] = *((void**) ptr);
-}
-  \end{lstlisting}
-  \begin{itemize}
+ \end{itemize}
+ \begin{lstlisting}
+  void setHistory(int ID, State* ptr) {
+    history_[ID] = *((void**) ptr);
+  }
+ \end{lstlisting}
+ \begin{itemize}
   \item ptr wird zun\"achst auf void** gecastet, damit man mit einer weiteren Dereferenzierung * an die virtuelle Funktionstabelle des Zustands gelangt
-  \end{itemize}
+ \end{itemize}
 \end{frame}
 
 %% History 4
 \begin{frame}[fragile]
-  \frametitle{History}
-  \begin{itemize}
+ \frametitle{History}
+ \begin{itemize}
   \item getStateFromHistory in der Kontextklasse:
-  \end{itemize}
-  \begin{lstlisting}
-void* getStateFromHistory(int ID){
-  return history_[ID];
-}
-  \end{lstlisting}
-  \begin{itemize}
+ \end{itemize}
+ \begin{lstlisting}
+  void* getStateFromHistory(int ID) {
+    return history_[ID];
+  }
+ \end{lstlisting}
+ \begin{itemize}
   \item \"uber seine ID kann der Zustand sich seine History -sofern eine vorliegt- aus der History-Tabelle in der Kontextklasse holen
-  \end{itemize}
+ \end{itemize}
 \end{frame}
 
 %% Timer 1
@@ -478,7 +497,7 @@ void* getStateFromHistory(int ID){
 \begin{frame}[fragile]
  \frametitle{Timer}
  Beispiel f\"ur die Erstellung eines Timers (1/2):
- \begin{lstlisting}[frame=single]
+ \begin{lstlisting}
 // 1.
 timer_t timerid;
 struct sigevent event;
@@ -499,7 +518,7 @@ SIGEV_PULSE_INIT(
 \begin{frame}[fragile]
  \frametitle{Timer}
  Beispiel f\"ur die Erstellung eines Timers (2/2):
- \begin{lstlisting}[frame=single]
+ \begin{lstlisting}
 // 3. Create timer with realtime clock
 timer_create(CLOCK_REALTIME, &event, &timerid);
 
@@ -521,11 +540,11 @@ timer_settime(timerid, 0, &timer, NULL);
  \frametitle{Timer}
  \begin{itemize}
   \item Hinweis f\"ur die Abfrage des Benachrichtigung-Typs:\newline
-  \begin{lstlisting}[frame=single]
-// Don't read the struct sigevent directly:
+  \begin{lstlisting}
+// Don't read the struct sigevent directly
 if(event.sigev_notify == SIGEV_PULSE)
 
-// Use this macro instead:
+// Use this macro instead
 if(SIGEV_GET_TYPE(&event) == SIGEV_PULSE)
   \end{lstlisting}
  \end{itemize}
@@ -538,6 +557,8 @@ if(SIGEV_GET_TYPE(&event) == SIGEV_PULSE)
   \item TODO:\newline\newline
   $\bullet$ \textbf{BEISPIEL}: Server, der auf Timer / Clients wartet\newline\newline
   $\bullet$ \textbf{BEISPIEL}: switch-case Refactoring nach Fowler\newline\newline
+  $\bullet$ \textbf{BEISPIEL}: Orthogonale Automaten\newline\newline
+  $\bullet$ \textbf{BEISPIEL}: F\"unf Pr\"ufungsfragen
  \end{itemize}
 \end{frame}
 
