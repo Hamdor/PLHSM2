@@ -37,7 +37,7 @@
 %% GoF fsm Beispiel (Klassendiagramm)
 \begin{frame}
  \frametitle{GoF State Pattern Struktur}
- \includegraphics[scale=.8]{img/fsm_gof.png}
+ \includegraphics[scale=.6]{img/fsm_gof.jpg}
  \begin{itemize}
   \item Kontext-Klasse (conveyor)
   \item Zustands Basisklasse (state)
@@ -59,7 +59,7 @@
 %% GoF fsm Systemgrenzen
 \begin{frame}
  \frametitle{Systemgrenzen}
- \includegraphics[scale=.9]{img/Systemgrenzen_fsm_gof.png}
+ \includegraphics[scale=.7]{img/Systemgrenzen_fsm_gof.jpg}
 \end{frame}
 
 %% GoF fsm Automat
@@ -181,7 +181,7 @@
 %% Externe Statevariablen
 \begin{frame}
  \frametitle{Externe Statevariablen}
-  \includegraphics[scale=.6]{img/fsm_externe_state_var.png}
+  \includegraphics[scale=.44]{img/fsm_externe_state_var.jpg}
 \end{frame}
 
 %% Implementierung von externen Statevariablen I
@@ -476,19 +476,19 @@ voidS StateS1::history(T* t){
  \frametitle{Timer}
  Beispiel f\"ur die Erstellung eines Timers (1/2):
  \begin{lstlisting}[frame=single]
-  // 1.
-  timer_t timerid;
-  struct sigevent event;
-  struct itimerspec timer;
+// 1.
+timer_t timerid;
+struct sigevent event;
+struct itimerspec timer;
 
-  // 2.
-  SIGEV_PULSE_INIT(
-    &event, // struct sigevent
-    coid,   // Connection ID of message receiver
-    SIGEV_PULSE_PRIO_INHERIT, // Priority
-    MY_CODE_TIMER, // Code for pulse handler
-    MY_VALUE_TIMER // Value for pulse handler
-  );
+// 2.
+SIGEV_PULSE_INIT(
+  &event, // struct sigevent
+  coid,   // Connection ID of message receiver
+  SIGEV_PULSE_PRIO_INHERIT, // Priority
+  MY_CODE_TIMER, // Code for pulse handler
+  MY_VALUE_TIMER // Value for pulse handler
+);
  \end{lstlisting}
 \end{frame}
 
@@ -497,19 +497,19 @@ voidS StateS1::history(T* t){
  \frametitle{Timer}
  Beispiel f\"ur die Erstellung eines Timers (2/2):
  \begin{lstlisting}[frame=single]
-  // 3. Create timer with realtime clock
-  timer_create(CLOCK_REALTIME, &event, &timerid);
+// 3. Create timer with realtime clock
+timer_create(CLOCK_REALTIME, &event, &timerid);
 
-  // Setup the timer (2s delay, 1s reload)
-  // it_value = one-shot value
-  // it_interval = reload value
-  timer.it_value.tv_sec = 2;
-  timer.it_value.tv_nsec = 0;
-  timer.it_interval.tv_sec = 1;
-  timer.it_interval.tv_nsec = 0;
+// Setup the timer (2s delay, 1s reload)
+// it_value = one-shot value
+// it_interval = reload value
+timer.it_value.tv_sec = 2;
+timer.it_value.tv_nsec = 0;
+timer.it_interval.tv_sec = 1;
+timer.it_interval.tv_nsec = 0;
 
-  // 4. Start the timer
-  timer_settime(timerid, 0, &timer, NULL);
+// 4. Start the timer
+timer_settime(timerid, 0, &timer, NULL);
  \end{lstlisting}
 \end{frame}
 
@@ -519,11 +519,11 @@ voidS StateS1::history(T* t){
  \begin{itemize}
   \item Hinweis f\"ur die Abfrage des Benachrichtigung-Typs:\newline
   \begin{lstlisting}[frame=single]
-   // Don't read the struct sigevent directly:
-   if(event.sigev_notify == SIGEV_PULSE)
+// Don't read the struct sigevent directly:
+if(event.sigev_notify == SIGEV_PULSE)
 
-   // Use this macro instead:
-   if(SIGEV_GET_TYPE(&event) == SIGEV_PULSE)
+// Use this macro instead:
+if(SIGEV_GET_TYPE(&event) == SIGEV_PULSE)
   \end{lstlisting}
  \end{itemize}
 \end{frame}
