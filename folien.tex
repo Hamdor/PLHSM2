@@ -205,8 +205,8 @@ void conveyor::stop() {
  \frametitle{Implementierung von externen Statevariablen I}
  \begin{lstlisting}
 class conveyor {
-  friend struct running;
-  friend struct stopped;
+  friend class running;
+  friend class stopped;
  public:
   conveyor()
       : m_state(new stopped),
