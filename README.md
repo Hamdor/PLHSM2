@@ -9,3 +9,8 @@ Get the sources
 ---------------
 * git clone https://github.com/Hamdor/PLHSM2.git
 * cd PLHSM2
+
+Build the examples
+------------------
+* cd src
+* make all
