@@ -54,6 +54,7 @@
 %% fsm Automat
 \begin{frame}
  \frametitle{Automat}
+ \includegraphics[scale=.8]{img/fsm_gof_automat.jpg}
 \end{frame}
 
 %% Switch Case Implementierung 1
@@ -84,11 +85,160 @@
 	\end{itemize}
 \end{frame}
 
-%% Matrix Implementierung
-\begin{frame}
- \frametitle{Implementierung II}
+%% State Table Implementierung I
+\begin{frame}[fragile]
+ \frametitle{Zustandstablle Implementierung I}
+ \begin{lstlisting}
+// Zustaende
+enum states {
+  STOPPED,
+  RUNNING,
+};
+
+// Eingangssignale
+enum input {
+  START,
+  STOP
+};
+
+struct transition {
+  states m_state;
+  input  m_input;
+  states m_next;
+  void (*m_fn) (void); // Funktionspointer
+};
+ \end{lstlisting}
 \end{frame}
 
+%% State Table Implementierung II
+\begin{frame}[fragile]
+ \frametitle{Zustandstablle Implementierung II}
+ \begin{lstlisting}
+// Context Klasse
+class conveyor {
+  static void starten();
+  static void stoppen();
+  // Transitionstabelle
+  static transition trans[];
+  // aktueller Zustand
+  states m_state;
+ public:
+  void do_action(input in);
+  conveyor() : m_state(STOPPED) { }
+};
+ \end{lstlisting}
+ Initialisierung des Zustandsarrays
+ \begin{lstlisting}
+transition conveyor::trans[] = {
+  { STOPPED, START, RUNNING, &conveyor::starten },
+  { RUNNING, STOP,  STOPPED, &conveyor::stoppen }
+};
+ \end{lstlisting}
+\end{frame}
+
+%% State Table Implementierung III
+\begin{frame}[fragile]
+ \frametitle{Zustandstablle Implementierung III}
+ \"Ubergangsfunktion in der Context Klasse
+ \begin{lstlisting}
+void conveyor::do_action(input in) {
+  for (int i = 0; i < TRANS_COUNT; ++i) {
+    if (trans[i].m_state == this->m_state &&
+        trans[i].m_input == in) {
+      trans[i].m_fn();
+      // Zustandswechsel
+      this->m_state = trans[i].m_next;
+      return;
+    }
+  }
+  // Fehlerausgabe hier moeglich
+  std::cout << "no action" << std::endl;
+}
+ \end{lstlisting}
+\end{frame}
+
+%% Vor- und Nachteile Zustandstabelle
+\begin{frame}
+ \frametitle{Vor- und Nachteile Zustandstablle}
+ \begin{itemize}
+  \item Vorteile:
+  \begin{itemize}
+   \item Einfach zu Implementieren
+   \item Keine NOP Operationen/Funktionen notwenig
+   \item Tabelle hat nur so viele Eintr\"age wie \"Uberg\"ange
+  \end{itemize}
+  \item Nachteil:
+  \begin{itemize}
+   \item Langsamer Zugriff
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+%% Matrix Implementierung I
+\begin{frame}[fragile]
+ \frametitle{Zustandsmatrix Implementierung I}
+ \begin{lstlisting}
+// Zustaende
+enum states {
+  NO_CHANGE = -1,
+  STOPPED,  // 0
+  RUNNING,  // 1
+};
+
+// Eingangssignale
+enum input {
+  START, // 0
+  STOP   // 1
+};
+
+// Ein Eintrag in der Tabelle
+struct transition {
+  states m_next;
+  void (*m_fn) (void); // Funktionspointer
+};
+ \end{lstlisting}
+\end{frame}
+
+%% Matrix Implementierung II
+\begin{frame}
+ \frametitle{Zustandsmatrix Implementierung II}
+ 2D Array
+ \includegraphics[scale=.4]{img/matrix_vim.png}
+\end{frame}
+
+%% Matrix Implementierung III
+\begin{frame}[fragile]
+ \frametitle{Zustandsmatrix Implementierung III}
+ \"Ubergangsfunktion in der Context Klasse
+ \begin{lstlisting}
+void conveyor::do_action(input in) {
+  int dim1 = static_cast<int>(this->m_state);
+  int dim2 = static_cast<int>(in);
+  trans[dim1][dim2].m_fn();
+  if (trans[dim1][dim2].m_next != NO_CHANGE) {
+    this->m_state = trans[dim1][dim2].m_next;
+  }
+}
+ \end{lstlisting}
+\end{frame}
+
+%% Vor- und Nachteile Zustandstabelle
+\begin{frame}
+ \frametitle{Vor- und Nachteile Zustandstablle}
+ \begin{itemize}
+  \item Vorteile:
+  \begin{itemize}
+   \item Gute Performance
+   \item Weniger Speicherverbrauch pro Eintrag
+  \end{itemize}
+  \item Nachteil:
+  \begin{itemize}
+   \item Schwerer zu implementieren
+   \item Matrix ben\"otigt insgesamt mehr Speicher da alle F\"alle auskodiert werden m\"ussen
+   \item NOP Funktion ben\"otigt
+  \end{itemize}
+ \end{itemize}
+\end{frame}
 
 %% GoF fsm Beispiel (Klassendiagramm)
 \begin{frame}
@@ -111,7 +261,7 @@ class conveyor {
   static stopped state_stopped;
   static running state_running;
  public:
-  conveyor(): m_state(new stopped) { }
+  conveyor(): m_state(&state_stopped) { }
   void start();
   void stop();
  private:
@@ -176,6 +326,11 @@ void running::stop(conveyor* context) {
  \end{itemize}
 \end{frame}
 
+%% GoF fsm Systemgrenzen
+\begin{frame}
+ \frametitle{Systemgrenzen}
+ \includegraphics[scale=.7]{img/Systemgrenzen_fsm_gof.jpg}
+\end{frame}
 
 %% GoF fsm States in Code I
 \begin{frame}
