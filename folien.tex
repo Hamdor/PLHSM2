@@ -56,9 +56,32 @@
  \frametitle{Automat}
 \end{frame}
 
-%% Switch Case Implementierung
+%% Switch Case Implementierung 1
 \begin{frame}
- \frametitle{Implementierung I}
+	\frametitle{Implementierung I : Geschachtelte Switch-Case-Anweisung}
+	\begin{itemize}
+		\item Zust\"ande und Signale werden durch enums repr\"asentiert
+		\item der aktuelle Zustand wird durch Zustandsvariable repr\"asentiert
+		\item 2-Level-Switch Case erforderlich: 1. Level pr\"uft aktuellen Zustand,
+		2. Level pr\"uft erhaltenes Signal
+	\end{itemize}
+\end{frame}
+
+%% Switch Case Implementierung 2
+\begin{frame}
+	\frametitle{Vor- und Nachteile geschachtelter Switch-Case-Automaten}
+	\begin{itemize}
+		\item Vorteile:
+		\begin{itemize}
+			\item einfach und leicht verst\"andlich
+			\item wenig Speicher ben\"otigt (nur eine State-Variable)
+		\end{itemize}
+		\item Nachteile
+		\begin{itemize}
+			\item die Verarbeitungszeit h\"angt von der Anzahl von Zust\"anden und Signalen ab
+			\item die Umsetzung hierarchischer Automaten ist schwierig 
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 %% Matrix Implementierung
