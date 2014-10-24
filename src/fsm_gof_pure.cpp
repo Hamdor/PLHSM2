@@ -22,7 +22,7 @@ class conveyor {
   static stopped state_stopped;
   static running state_running;
  public:
-  conveyor(): m_state(new stopped) { }
+  conveyor(): m_state(&state_stopped) { }
   void start();
   void stop();
  private:
