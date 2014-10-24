@@ -1,5 +1,8 @@
 
-all: fsm_gof fsm_extern_state_var fsm_guards
+all: fsm_state_table fsm_gof fsm_extern_state_var fsm_guards
+
+fsm_state_table:
+	g++ fsm_state_table.cpp -o fsm_state_table
 
 fsm_gof:
 	g++ fsm_gof.cpp -o fsm_gof
@@ -11,4 +14,4 @@ fsm_guards:
 	g++ fsm_guards.cpp -o fsm_guards
 
 clean:
-	rm fsm_gof fsm_extern_state_var fsm_guards
+	rm fsm_gof fsm_extern_state_var fsm_guards fsm_state_table
