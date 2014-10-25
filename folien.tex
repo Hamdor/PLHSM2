@@ -65,10 +65,37 @@
 		\item der aktuelle Zustand wird durch Zustandsvariable repr\"asentiert
 		\item 2-Level-Switch Case erforderlich: 1. Level pr\"uft aktuellen Zustand,
 		2. Level pr\"uft erhaltenes Signal
+		\item es empfiehlt sich, den Automaten in einer dispatch-Methode zu kapseln
 	\end{itemize}
 \end{frame}
 
 %% Switch Case Implementierung 2
+\begin{frame}[fragile]
+	\frametitle{Beispiel der dispatch-Methode}
+	\begin{lstlisting}
+	
+enum State{ srunning, sstopped }; // Zustaende
+
+enum Signal{ Start, Stop }; //Eingangssignale
+	
+void dispatch(Signal sig){
+  switch(state){ // Zustand pruefen
+    case srunning:
+      switch(sig){ // erhaltenes Signal pruefen
+        case Start: // bereits srunning  
+          break; // -> keine Reaktion erforderlich
+        case Stop:
+          tran(sstopped); //Transition
+          stopped(); //cout << "stop"<<endl;
+          break;
+      }
+      ...
+  }  
+};
+	\end{lstlisting}
+\end{frame}
+
+%% Switch Case Implementierung 3
 \begin{frame}
 	\frametitle{Vor- und Nachteile geschachtelter Switch-Case-Automaten}
 	\begin{itemize}
