@@ -39,7 +39,7 @@
   \item Switch-Case Implementierung
   \item Zustandstabelle
   \item Zustandsmatrix
-  \item GoF Pure
+  \item GoF
   \item GoF Pareigis/Manske
   \item Externe Statevariablen
   \item Guards/Choice Points
@@ -63,25 +63,24 @@
 
 %% Switch Case Implementierung 1
 \begin{frame}
-	\frametitle{Implementierung I : Geschachtelte Switch-Case-Anweisung}
-	\begin{itemize}
-		\item Zust\"ande und Signale werden durch enums repr\"asentiert
-		\item der aktuelle Zustand wird durch Zustandsvariable repr\"asentiert
-		\item 2-Level-Switch Case erforderlich: 1. Level pr\"uft aktuellen Zustand,
-		2. Level pr\"uft erhaltenes Signal
-		\item es empfiehlt sich, den Automaten in einer dispatch-Methode zu kapseln
-	\end{itemize}
+  \frametitle{Implementierung I : Geschachtelte Switch-Case-Anweisung}
+  \begin{itemize}
+    \item Zust\"ande und Signale werden durch enums repr\"asentiert
+    \item der aktuelle Zustand wird durch Zustandsvariable repr\"asentiert
+    \item 2-Level-Switch Case erforderlich: 1. Level pr\"uft aktuellen Zustand,
+    2. Level pr\"uft erhaltenes Signal
+    \item es empfiehlt sich, den Automaten in einer dispatch-Methode zu kapseln
+  \end{itemize}
 \end{frame}
 
 %% Switch Case Implementierung 2
 \begin{frame}[fragile]
-	\frametitle{Beispiel der dispatch-Methode}
-	\begin{lstlisting}
-	
+  \frametitle{Beispiel der dispatch-Methode}
+  \begin{lstlisting}
 enum State{ srunning, sstopped }; // Zustaende
 
 enum Signal{ Start, Stop }; //Eingangssignale
-	
+
 void dispatch(Signal sig){
   switch(state){ // Zustand pruefen
     case srunning:
@@ -93,27 +92,27 @@ void dispatch(Signal sig){
           stopped(); //cout << "stop"<<endl;
           break;
       }
-      ...
+      // ...
   }  
 };
-	\end{lstlisting}
+  \end{lstlisting}
 \end{frame}
 
 %% Switch Case Implementierung 3
 \begin{frame}
-	\frametitle{Vor- und Nachteile geschachtelter Switch-Case-Automaten}
-	\begin{itemize}
-		\item Vorteile:
-		\begin{itemize}
-			\item einfach und leicht verst\"andlich
-			\item wenig Speicher ben\"otigt (nur eine State-Variable)
-		\end{itemize}
-		\item Nachteile
-		\begin{itemize}
-			\item die Verarbeitungszeit h\"angt von der Anzahl von Zust\"anden und Signalen ab
-			\item die Umsetzung hierarchischer Automaten ist schwierig 
-		\end{itemize}
-	\end{itemize}
+  \frametitle{Vor- und Nachteile geschachtelter Switch-Case-Automaten}
+  \begin{itemize}
+    \item Vorteile:
+    \begin{itemize}
+      \item einfach und leicht verst\"andlich
+      \item wenig Speicher ben\"otigt (nur eine State-Variable)
+    \end{itemize}
+    \item Nachteile
+    \begin{itemize}
+      \item die Verarbeitungszeit h\"angt von der Anzahl von Zust\"anden und Signalen ab
+      \item die Umsetzung hierarchischer Automaten ist schwierig 
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 %% State Table Implementierung I
