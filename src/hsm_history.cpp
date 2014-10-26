@@ -42,7 +42,7 @@ void S0::exit(Context* c) {
 void S0::init(Context* c) {
   void* history = c->getStateFromHistory(S0_ID);
   if (history != 0) {
-    memcpy(this, &history,4);
+    memcpy(static_cast<void*>(this), &history, sizeof(void*));
   } else {
     new (this) S1;
     entry(c);
@@ -86,7 +86,7 @@ void S1::exit(Context* c) {
 void S1::init(Context* c) {
   void* history = c->getStateFromHistory(S1_ID);
   if(history != 0){
-    memcpy(this, &history, sizeof(&history));
+    memcpy(static_cast<void*>(this), &history, sizeof(void*));
   } else {
     new (this) S3;
     entry(c);
