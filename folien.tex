@@ -531,7 +531,7 @@ void conveyor::stop() {
  Erstellt die Systemgrenzen, Automatendiagramm, und Code eines Lichtschalters (An und Aus Button). (15 Min)
 \end{frame}
 
-%% Orthogonale Automaten
+%% Orthogonale Automaten I
 \begin{frame}
  \frametitle{Orthogonale Automaten}
  \begin{itemize}
@@ -540,6 +540,45 @@ void conveyor::stop() {
  \end{itemize}
 \end{frame}
 
+%% Orthogonale Automaten II
+\begin{frame}[fragile]
+ \frametitle{Implementierung Orthogonaler Automaten I}
+ \begin{lstlisting}
+class token_summary {
+  std::vector<token*> m_tokens;
+ public:
+  void entry();
+  void height();
+  void del();
+};
+ \end{lstlisting}
+\end{frame}
+
+%% %% Orthogonale Automaten III
+\begin{frame}[fragile]
+ \frametitle{Implementierung Orthogonaler Automaten II}
+ \begin{lstlisting}
+void token_summary::entry() {
+  m_tokens.push_back(new token());
+  std::cout << "Neuer Token auf Band" << std::endl;
+}
+
+void token_summary::height() {
+  for(size_t i = 0; i < m_tokens.size(); ++i) {
+    m_tokens[i]->height();
+  }
+}
+
+void token_summary::del() {
+  for(size_t i = 0; i < m_tokens.size(); ++i) {
+    m_tokens[i]->del();
+  }
+  token* ptr = m_tokens.front();
+  m_tokens.erase(m_tokens.begin());
+  delete ptr;
+}
+ \end{lstlisting}
+\end{frame}
 
 %% Externe Statevariablen
 \begin{frame}
