@@ -2,12 +2,6 @@
 #include <iostream>
 #include <vector>
 
-enum input {
-  ENTRY,  // Anfangslichtschranke durchbrochen
-  HEIGHT, // Token in höhensensor
-  EXIT,   // Endlichtschranke durchbrochen
-};
-
 class state {
  public:
   virtual ~state() { }
