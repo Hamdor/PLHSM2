@@ -9,7 +9,7 @@
 using namespace std;
 
 enum State{
-    srunning, sstopped
+    Running, Stopped
 };
 
 enum Signal{
@@ -32,26 +32,26 @@ AutomatNested::AutomatNested(){
     init();
 }
 void AutomatNested::init(){
-    AutomatNested::state = sstopped;
+    AutomatNested::state = Stopped;
 };
 
 void AutomatNested::dispatch(Signal sig){
     switch(AutomatNested::state){
-        case srunning:
+        case Running:
             switch(sig){
                 case Start:
                     break;
                 case Stop:
-                    tran(sstopped);
+                    tran(Stopped);
                     stopped();
                     break;
                     
             }
             break;
-        case sstopped:
+        case Stopped:
             switch(sig){
                 case Start:
-                    tran(srunning);
+                    tran(Running);
                     running();
                     break;
                 case Stop:
