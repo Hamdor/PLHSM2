@@ -115,6 +115,58 @@ void dispatch(Signal sig){
   \end{itemize}
 \end{frame}
 
+%% Switch Case Implementierung 1 ungeschachtelt
+\begin{frame}
+	\frametitle{Implementierung II : Ungeschachtelte Switch-Case-Anweisung nach Samek}
+	\begin{itemize}
+		\item Zust\"ande werden durch typedef einer Pointer-to-Member-Funktion mit Signal als Parameter repr\"asentiert (  typedef void (Kontext::*State)(unsigned const sig);  )
+		\item die dispatch-Methode \"ubergibt das erhaltene Signal an diese State-Variable (bzw. die Pointer-to-Member-Funktion) 
+		\item die Zust\"ande werten die Signale dann mittels switch-case aus
+	\end{itemize}
+\end{frame}
+
+%% Switch Case Implementierung 2 ungeschachtelt
+\begin{frame}[fragile]
+	\frametitle{Beispiel einer Pointer-to-Member-Funktion}
+	\begin{lstlisting}
+enum Signal{ Start, Stop }; //Eingangssignale
+//...
+void dispatch(unsigned const sig) {
+  this->*myState) (sig); } 
+//...
+void Kontext::running(Signal sig){
+  switch(sig){ //im Zustand running erhaltenes Signal pruefen
+    case Start: // da bereits srunning  ..
+    break; // ..-> keine Reaktion erforderlich
+  case Stop:
+    tran(sstopped); //Transition
+    stopped(); //cout << "stop"<<endl;
+    break;
+  }
+}  
+	\end{lstlisting}
+\end{frame}
+
+%% Switch Case Implementierung 3 ungeschachtelt
+\begin{frame}
+	\frametitle{Vor- und Nachteile ungeschachtelter Switch-Case-Automaten}
+	\begin{itemize}
+		\item Vorteile:
+		\begin{itemize}
+			\item leicht verst\"andliche Struktur/ einfache Umsetzung
+			\item speicherschonend, da nur der state-Pointer gespeichert werden muss
+			\item Code kann wiederverwendet werden, da der generische Teil (init, dispatch und tran-Methoden) in einer Klasse gekapselt werden kann
+			\item effizient, da ein switch-case-Level wegf\"allt
+			\item \"Anderungen im Automaten sind leicht umsetzbar
+		\end{itemize}
+		\item Nachteile
+		\begin{itemize}
+			\item die verbliebene Switch-Case-Anweisung ist immernoch von der Anzahl Signale abg\"angig
+			\item nicht f\"ur hierarchische Automaten geeignet
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
 %% State Table Implementierung I
 \begin{frame}[fragile]
  \frametitle{Zustandstablle Implementierung I}
