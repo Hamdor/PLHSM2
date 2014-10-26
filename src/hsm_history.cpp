@@ -86,12 +86,12 @@ void S1::exit(Context* c) {
 void S1::init(Context* c) {
   void* history = c->getStateFromHistory(S1_ID);
   if(history != 0){
-    cout << "S1::init" << endl;
     memcpy(this, &history, sizeof(&history));
   } else {
     new (this) S3;
     entry(c);
   }
+  init(c);
 }
 
 void S1::history(Context* c) {
@@ -132,6 +132,10 @@ void S3::history(Context* c) {
   c->setHistory(S1_ID, this);
 }
 
+void S3::init(Context*) {
+  // nop
+}
+
 Context::Context() : m_current_state(new S0) {
   memset(&m_history, 0, sizeof(m_history));
   m_current_state->entry(this);
@@ -149,10 +153,7 @@ void Context::sigC() {
   m_current_state->sigC(this);
 }
 
-//void* history[MAX_ID] = { 0 };
-
 void Context::setHistory(int ID, State* ptr) {
-  //history[ID] = *((void**) ptr);
   m_history[ID] = *reinterpret_cast<void**>(ptr);
 }
 

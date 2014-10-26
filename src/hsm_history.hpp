@@ -63,5 +63,6 @@ struct S3 : public S1 {
   void entry(Context*);
   void exit(Context*);
   void history(Context*);
+  void init(Context*);
 };
 
