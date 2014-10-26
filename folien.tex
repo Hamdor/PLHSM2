@@ -52,18 +52,16 @@
 %% fsm Systemgrenzen
 \begin{frame}
  \frametitle{Systemgrenzen}
- \includegraphics[scale=.7]{img/Systemgrenzen_fsm_gof.jpg}
-\end{frame}
-
-%% fsm Automat
-\begin{frame}
- \frametitle{Automat}
- \includegraphics[scale=.8]{img/fsm_gof_automat.jpg}
+ \begin{center}
+   \includegraphics[scale=.5]{img/Systemgrenzen_fsm_gof.jpg}
+   \newline
+  \end{center}
+  \includegraphics[scale=.6]{img/fsm_gof_automat.jpg}
 \end{frame}
 
 %% Switch Case Implementierung 1
 \begin{frame}
-  \frametitle{Implementierung I : Geschachtelte Switch-Case-Anweisung}
+  \frametitle{Geschachtelte Switch-Case-Anweisung}
   \begin{itemize}
     \item Zust\"ande und Signale werden durch enums repr\"asentiert
     \item der aktuelle Zustand wird durch Zustandsvariable repr\"asentiert
@@ -327,7 +325,7 @@ void conveyor::do_action(input in) {
 %% GoF fsm Beispiel (Klassendiagramm)
 \begin{frame}
  \frametitle{GoF State Pattern Struktur}
- \includegraphics[scale=.6]{img/fsm_gof.jpg}
+
  \begin{itemize}
   \item Kontext-Klasse (conveyor)
   \item Zustands Basisklasse (state)
@@ -412,8 +410,8 @@ void running::stop(conveyor* context) {
 
 %% GoF fsm Systemgrenzen
 \begin{frame}
- \frametitle{Systemgrenzen}
- \includegraphics[scale=.7]{img/Systemgrenzen_fsm_gof.jpg}
+ \frametitle{GoF nach Pareigis/Manske}
+ \includegraphics[scale=.6]{img/fsm_gof.jpg}
 \end{frame}
 
 %% GoF fsm States in Code I
@@ -637,14 +635,10 @@ void stopped::start(conveyor* context) {
  \end{lstlisting}
 \end{frame}
 
-%% Choice Points
-\begin{frame}
- \frametitle{Choice Points}
-\end{frame}
-
 %% �bung Guards
 \begin{frame}
  \frametitle{\"Ubung Lichtschalter II}
+ Implementieren sie einen Lichtschalter der nach mehrfachem bet\"atigen der Starttaste in ein anderes Licht wechselt
 \end{frame}
 
 %% Entry/Exit Code 1
@@ -719,7 +713,7 @@ void StateS1::init(T* t) {
  \begin{itemize}
   \item die entry-Funktion ist in jedem Zustand definiert
   \item init() f\"uhrt dazu, dass -sofern ein Substate bereits in der History vorliegt- dieser direkt betreten wird; ansonsten wird er neu erzeugt
-  \item der erneute init()-Aufruf darf in der vorletzten bzw. letzten Hierarchie-Ebene nicht stattfinden (ansonsten Endlosschleife) ????????? korrekt??
+  \item die init()-Funktion in der letzten Ebene ist leer
  \end{itemize}
 \end{frame}
 
@@ -741,13 +735,12 @@ void StateS1::init(T* t) {
   \item Beispiel: S1 tr\"agt sich in History-Tabelle ein
  \end{itemize}
  \begin{lstlisting}
-  //StateS1 history-Funktion
-  voidS StateS1::history(T* t) {
-
-    //t ist ein Pointer auf die Kontextklasse
-    t->setHistory(State::StateID::StateS1_ID,
-                  this);
-  }
+//StateS1 history-Funktion
+voidS StateS1::history(T* t) {
+  //t ist ein Pointer auf die Kontextklasse
+  t->setHistory(State::StateID::StateS1_ID,
+                this);
+}
  \end{lstlisting}
  \begin{itemize}
   \item der Parameter StateS1ID gibt den Index in der History-Tabelle in der Kontextklasse an
@@ -894,9 +887,7 @@ if(SIGEV_GET_TYPE(&event) == SIGEV_PULSE)
  \begin{itemize}
   \item TODO:\newline\newline
   $\bullet$ \textbf{BEISPIEL}: Server, der auf Timer / Clients wartet\newline\newline
-  $\bullet$ \textbf{BEISPIEL}: switch-case Refactoring nach Fowler\newline\newline
   $\bullet$ \textbf{BEISPIEL}: Orthogonale Automaten\newline\newline
-  $\bullet$ \textbf{BEISPIEL}: F\"unf Pr\"ufungsfragen
  \end{itemize}
 \end{frame}
 
