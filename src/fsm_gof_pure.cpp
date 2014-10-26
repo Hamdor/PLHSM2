@@ -7,22 +7,48 @@ class state {
   virtual void start(conveyor* context) { }
   virtual void stop(conveyor* context) { }
 };
+
 class running : public state {
+  static running* m_instance;
  public:
   void stop(conveyor* context);
-};
-class stopped : public state {
- public:
-  void start(conveyor* context);
+  static running* instance() {
+    if (!m_instance) {
+      m_instance = new running();
+    }
+    return m_instance;
+  }
+ private:
+  running() { };
 };
 
-class conveyor {
-  friend class running;
-  friend class stopped;
-  static stopped state_stopped;
-  static running state_running;
+// <-- CPP running
+running* running::m_instance;
+
+// <-- Header stopped
+class stopped : public state {
+  static stopped* m_instance;
  public:
-  conveyor(): m_state(&state_stopped) { }
+  void start(conveyor* context);
+  static stopped* instance() {
+    if (!m_instance) {
+      m_instance = new stopped();
+    }
+    return m_instance;
+  }
+ private:
+  stopped() { };
+};
+
+// <-- CPP stopped
+stopped* stopped::m_instance;
+
+// <-- Header conveyor
+class conveyor {
+  friend class stopped;
+  friend class running;
+ public:
+  conveyor(): m_state(stopped::instance()) { }
   void start();
   void stop();
  private:
@@ -35,10 +61,6 @@ class conveyor {
 #include <iostream>
 using namespace std;
 
-// initialisierung der statischen Zuständ
-stopped conveyor::state_stopped;
-running conveyor::state_running;
-
 // Zustandswechsel funktion
 void conveyor::tran(state* target) {
   m_state = target;
@@ -47,13 +69,13 @@ void conveyor::tran(state* target) {
 // transition running -> stopped
 void running::stop(conveyor* context) {
   cout << "running: stop()" << endl;
-  context->tran(&conveyor::state_stopped);
+  context->tran(stopped::instance());
 }
 
 // transition stopped -> running
 void stopped::start(conveyor* context) {
   cout << "stopped: start() " << endl;
-  context->tran(&conveyor::state_running);
+  context->tran(running::instance());
 }
 
 void conveyor::start() {
@@ -71,5 +93,8 @@ int main() {
   belt.stop();
   belt.start();
   belt.start();
+  // delete singletons
+  delete running::instance();
+  delete stopped::instance();
   return 0;
 }

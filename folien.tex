@@ -338,12 +338,10 @@ void conveyor::do_action(input in) {
  \frametitle{GoF Implementierung I Header}
  \begin{lstlisting}
 class conveyor {
-  friend class running;
   friend class stopped;
-  static stopped state_stopped;
-  static running state_running;
+  friend class running;
  public:
-  conveyor(): m_state(&state_stopped) { }
+  conveyor(): m_state(stopped::instance()) { }
   void start();
   void stop();
  private:
@@ -358,19 +356,18 @@ class conveyor {
 \begin{frame}[fragile]
  \frametitle{GoF Implementierung II Header}
  \begin{lstlisting}
-class state {
- public:
-  virtual ~state() { }
-  virtual void start(conveyor* context) { }
-  virtual void stop(conveyor* context) { }
-};
 class running : public state {
+  static running* m_instance;
  public:
   void stop(conveyor* context);
-};
-class stopped : public state {
- public:
-  void start(conveyor* context);
+  static running* instance() {
+    if (!m_instance) {
+      m_instance = new running();
+    }
+    return m_instance;
+  }
+ private:
+  running() { };
 };
  \end{lstlisting}
 \end{frame}
@@ -379,10 +376,6 @@ class stopped : public state {
 \begin{frame}[fragile]
  \frametitle{GoF Implementierung III}
  \begin{lstlisting}
-// initialisierung der statischen Zuständ
-stopped conveyor::state_stopped;
-running conveyor::state_running;
-
 // Zustandswechsel funktion
 void conveyor::tran(state* target) {
   m_state = target;
@@ -391,7 +384,7 @@ void conveyor::tran(state* target) {
 // transition running -> stopped
 void running::stop(conveyor* context) {
   cout << "running: stop()" << endl;
-  context->tran(&conveyor::state_stopped);
+  context->tran(stopped::instance());
 }
  \end{lstlisting}
 \end{frame}
