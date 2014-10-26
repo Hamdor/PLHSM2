@@ -69,7 +69,7 @@ void Motor::running(Signal sig){
  */
 int main(int argc, char** argv) {
     
-    FSM fsm((FSM::State)&Motor::stopped);
+    FSM fsm((FSM::State)&Motor::initial);
     fsm.init();
     fsm.dispatch(Start);
     fsm.dispatch(Start);
