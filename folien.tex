@@ -36,22 +36,18 @@
 \begin{frame}
  \frametitle{Themen}
  \begin{itemize}
-  \item Switch-Case Implementierung
-  \item Zustandstabelle
-  \item Zustandsmatrix
-  \item GoF
-  \item GoF Pareigis/Manske
+  \item Implementierungs Arten
   \item Externe Statevariablen
-  \item Guards/Choice Points
+  \item Guards
   \item Entry und Exit Code
   \item History
   \item Timer
  \end{itemize}
 \end{frame}
 
-%% fsm Systemgrenzen
+%% Beispiel
 \begin{frame}
- \frametitle{Systemgrenzen}
+ \frametitle{Beispiel F\"orderband}
  \begin{center}
    \includegraphics[scale=.5]{img/Systemgrenzen_fsm_gof.jpg}
    \newline
@@ -90,7 +86,7 @@ void dispatch(Signal sig){
           stopped(); //cout << "stop"<<endl;
           break;
       }
-      // ...
+    // ...
   }  
 };
   \end{lstlisting}
@@ -591,12 +587,6 @@ class stopped : public state {
  \frametitle{Implementierung von externen Statevariablen III}
  Implementierung:
  \begin{lstlisting}
-// transition running -> stopped
-void running::stop(conveyor* context) {
-  ++context->m_count_stopped;
-  new (this) stopped;
-}
-
 // transition stopped -> running
 void stopped::start(conveyor* context) {
   ++context->m_count_started;
@@ -606,17 +596,15 @@ void stopped::start(conveyor* context) {
 void conveyor::start() {
   m_state->start(this);
 }
-
-void conveyor::stop() {
-  m_state->stop(this);
-}
  \end{lstlisting}
 \end{frame}
 
 %% Guards
 \begin{frame}
  \frametitle{Guards}
- Guard Automat:
+ \begin{center}
+   \includegraphics[scale=.8]{img/fsm_gof_guard_automat.png}
+ \end{center}
 \end{frame}
 
 %% Guard Implementierung
