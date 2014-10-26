@@ -341,6 +341,27 @@ void conveyor::do_action(input in) {
  \end{itemize}
 \end{frame}
 
+%% GoF fsm States in Code I
+\begin{frame}
+ \frametitle{GoF States in Code I}
+ \begin{itemize}
+  \item Alle States erben von einer Oberstate Klasse
+  \item Der Oberstate implementiert alle Events aller Zust\"ande als leere virtuelle Funktion
+  \item Der jeweilige Zustand implementiert nur seine eigenen Events, nicht relevante
+  Events werden an die leeren Methoden der Basisklasse weitergereicht
+ \end{itemize}
+\end{frame}
+
+%% GoF fsm Kontext Klasse
+\begin{frame}
+ \frametitle{GoF Kontext Klasse}
+ \begin{itemize}
+  \item Sicht von au{\ss}en auf die FSM
+  \item Dient als Delegator zu den Zust\"anden
+  \item Bedient alle Eingangssignale durch Funktionen
+ \end{itemize}
+\end{frame}
+
 %% GoF fsm pure
 \begin{frame}[fragile]
  \frametitle{GoF Implementierung I Header}
@@ -354,7 +375,6 @@ class conveyor {
   void stop();
  private:
   state* m_state;
- protected:
   void tran(state* target);
 };
  \end{lstlisting}
@@ -415,17 +435,6 @@ void running::stop(conveyor* context) {
  \includegraphics[scale=.6]{img/fsm_gof.jpg}
 \end{frame}
 
-%% GoF fsm States in Code I
-\begin{frame}
- \frametitle{GoF States in Code I}
- \begin{itemize}
-  \item Alle States erben von einer Oberstate Klasse
-  \item Der Oberstate implementiert alle Events aller Zust\"ande als leere virtuelle Funktion
-  \item Der jeweilige Zustand implementiert nur seine eigenen Events, nicht relevante
-  Events werden an die leeren Methoden der Basisklasse weitergereicht
- \end{itemize}
-\end{frame}
-
 %% GoF fsm States in Code (Header)
 \begin{frame}[fragile]
  \frametitle{GoF States in Code (Header)}
@@ -465,16 +474,6 @@ void stopped::start() {
   cout << "start() / run" << endl;
 }
  \end{lstlisting}
-\end{frame}
-
-%% GoF fsm Kontext Klasse
-\begin{frame}
- \frametitle{GoF Kontext Klasse}
- \begin{itemize}
-  \item Sicht von au{\ss}en auf die FSM
-  \item Dient als Delegator zu den Zust\"anden
-  \item Bedient alle Eingangssignale durch Funktionen
- \end{itemize}
 \end{frame}
 
 %% GoF fsm Konext Klasse
@@ -677,10 +676,10 @@ void stopped::start(conveyor* context) {
  \end{lstlisting}
 \end{frame}
 
-%% �bung Guards
+%% Uebung Guards
 \begin{frame}
  \frametitle{\"Ubung Lichtschalter II}
- Implementieren sie einen Lichtschalter der nach mehrfachem bet\"atigen der Starttaste in ein anderes Licht wechselt
+ Implementieren sie einen Lichtschalter der nach mehrfachem bet\"atigen der Starttaste in ein anderes Licht wechselt (10 Min)
 \end{frame}
 
 %% Entry/Exit Code 1
