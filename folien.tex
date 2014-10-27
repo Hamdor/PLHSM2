@@ -98,14 +98,33 @@ void dispatch(Signal sig){
   \begin{itemize}
     \item Vorteile:
     \begin{itemize}
-      \item einfach und leicht verst\"andlich
+      %\item einfach und leicht verst\"andlich
       \item wenig Speicher ben\"otigt (nur eine State-Variable)
     \end{itemize}
     \item Nachteile
     \begin{itemize}
       \item die Verarbeitungszeit h\"angt von der Anzahl von Zust\"anden und Signalen ab
-      \item die Umsetzung hierarchischer Automaten ist schwierig 
+      \item die Umsetzung hierarchischer Automaten ist schwierig
+      \item In der Regel unübersichtlich und schwer erweiterbar
     \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%% Übung switch/case geschachtelt
+\begin{frame}
+  \frametitle{\"Ubung geschachteltes Switch-Case}
+  Erstellt einen Automaten (Geschachteltes Switch-Case) der eine T\"ur darstellt. (10 Min)
+  \begin{itemize}
+   \item Eingangssignale
+   \begin{itemize}
+    \item \"Offnen
+    \item Schlie{\ss}en
+   \end{itemize}
+   \item Zust\"ande
+   \begin{itemize}
+    \item Ge\"offnet
+    \item Geschlossen
+   \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -243,9 +262,15 @@ void conveyor::do_action(input in) {
  \end{lstlisting}
 \end{frame}
 
+%% Diskussion
+\begin{frame}
+ \frametitle{Vor- und Nachteile Zustandstabelle}
+ \"Uberlegt euch kurz die Vor- und Nachteile dieser Implementierung (5 Min)
+\end{frame}
+
 %% Vor- und Nachteile Zustandstabelle
 \begin{frame}
- \frametitle{Vor- und Nachteile Zustandstablle}
+ \frametitle{Vor- und Nachteile Zustandstabelle}
  \begin{itemize}
   \item Vorteile:
   \begin{itemize}
@@ -533,6 +558,9 @@ void conveyor::stop() {
 %% Orthogonale Automaten I
 \begin{frame}
  \frametitle{Orthogonale Automaten}
+ \begin{center}
+ \includegraphics[scale=.5]{img/Orthogonal.jpg}
+ \end{center}
  \begin{itemize}
   \item Alle Automaten bekommen das Eingangssignal
   \item Nur die betreffende Instanz reagiert
@@ -553,7 +581,7 @@ class token_summary {
  \end{lstlisting}
 \end{frame}
 
-%% %% Orthogonale Automaten III
+%% Orthogonale Automaten III
 \begin{frame}[fragile]
  \frametitle{Implementierung Orthogonaler Automaten II}
  \begin{lstlisting}
@@ -577,6 +605,15 @@ void token_summary::del() {
   delete ptr;
 }
  \end{lstlisting}
+\end{frame}
+
+%% Orthogonale Automaten in SE2P
+\begin{frame}
+ \frametitle{Orthogonale Automaten in SE2P}
+ \begin{itemize}
+  \item Jeder Puk/Token ist ein Automaten
+  \item Puks/Tokens m\"ussen verwaltet werden (bsp. token\_summary)
+ \end{itemize}
 \end{frame}
 
 %% Externe Statevariablen
@@ -930,6 +967,7 @@ if(SIGEV_GET_TYPE(&event) == SIGEV_PULSE)
   \item Wie geht man Schrittweise vor einen Automaten zu implementieren?
   \item Was ist zu beachten bei Statevariablen und die Nachteile die dadurch entstehen?
   \item Wie geht man vor einen Timer zu implementieren?
+  \item Wie würde ein Automat der Doppelklicks erkennt aussehen?
  \end{itemize}
 \end{frame}
 
