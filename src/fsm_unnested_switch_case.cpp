@@ -1,6 +1,6 @@
 /* 
  * File:   main.cpp
- * Author: nena
+ * Author: Anne-Lena
  *
  * Created on 26. Oktober 2014, 16:06
  */
