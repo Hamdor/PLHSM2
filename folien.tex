@@ -36,10 +36,10 @@
 \begin{frame}
  \frametitle{Themen}
  \begin{itemize}
-  \item Implementierungs Arten
-  \item Externe Statevariablen
+  \item Implementierungs-Arten
+  \item Externe State-Variablen
   \item Guards
-  \item Entry und Exit Code
+  \item Entry- und Exit-Code
   \item History
   \item Timer
  \end{itemize}
@@ -59,11 +59,11 @@
 \begin{frame}
   \frametitle{Geschachtelte Switch-Case-Anweisung}
   \begin{itemize}
-    \item Zust\"ande und Signale werden durch enums repr\"asentiert
-    \item der aktuelle Zustand wird durch Zustandsvariable repr\"asentiert
-    \item 2-Level-Switch Case erforderlich: 1. Level pr\"uft aktuellen Zustand,
-    2. Level pr\"uft erhaltenes Signal
-    \item es empfiehlt sich, den Automaten in einer dispatch-Methode zu kapseln
+    \item Zust\"ande und Signale werden durch \emph{enums} repr\"asentiert
+    \item Der aktuelle Zustand wird durch eine Zustands-Variable repr\"asentiert
+    \item 2-Level-Switch-Case erforderlich: Level 1 pr\"uft den aktuellen Zustand,
+    Level 2 pr\"uft das erhaltene Signal
+    \item Es empfiehlt sich, den Automaten in einer dispatch-Methode zu kapseln
   \end{itemize}
 \end{frame}
 
@@ -78,9 +78,9 @@ enum Signal{ Start, Stop }; //Eingangssignale
 void dispatch(Signal sig){
   switch(state){ // Zustand pruefen
     case srunning:
-      switch(sig){ // erhaltenes Signal pruefen
-        case Start: // bereits srunning  
-          break; // -> keine Reaktion erforderlich
+      switch(sig){ // Erhaltenes Signal pruefen
+        case Start: // Bereits srunning  
+          break; // -> Keine Reaktion erforderlich
         case Stop:
           tran(sstopped); //Transition
           stopped(); //cout << "stop"<<endl;
@@ -99,21 +99,21 @@ void dispatch(Signal sig){
     \item Vorteile:
     \begin{itemize}
       %\item einfach und leicht verst\"andlich
-      \item wenig Speicher ben\"otigt (nur eine State-Variable)
+      \item Wenig Speicher ben\"otigt (nur eine State-Variable)
     \end{itemize}
     \item Nachteile
     \begin{itemize}
-      \item die Verarbeitungszeit h\"angt von der Anzahl von Zust\"anden und Signalen ab
-      \item die Umsetzung hierarchischer Automaten ist schwierig
-      \item In der Regel unübersichtlich und schwer erweiterbar
+      \item Die Verarbeitungszeit h\"angt von der Anzahl von Zust\"anden und Signalen ab
+      \item Die Umsetzung hierarchischer Automaten ist schwierig
+      \item In der Regel un\"ubersichtlich und schwer erweiterbar
     \end{itemize}
   \end{itemize}
 \end{frame}
 
 %% Übung switch/case geschachtelt
 \begin{frame}
-  \frametitle{\"Ubung geschachteltes Switch-Case}
-  Erstellt einen Automaten (Geschachteltes Switch-Case) der eine T\"ur darstellt. (10 Min)
+  \frametitle{\"Ubung: Geschachteltes Switch-Case}
+  Erstellt einen Automaten (geschachteltes Switch-Case) der eine T\"ur darstellt. (10 Minuten)
   \begin{itemize}
    \item Eingangssignale
    \begin{itemize}
@@ -130,11 +130,12 @@ void dispatch(Signal sig){
 
 %% Switch Case Implementierung 1 ungeschachtelt
 \begin{frame}
-  \frametitle{Implementierung II : Ungeschachtelte Switch-Case-Anweisung nach Samek}
+  \frametitle{Implementierung II: Ungeschachtelte Switch-Case-Anweisung nach Samek}
   \begin{itemize}
-    \item Zust\"ande werden durch typedef einer Pointer-to-Member-Funktion mit Signal als Parameter repr\"asentiert (  typedef void (Kontext::*State)(unsigned const sig);  )
-    \item die dispatch-Methode \"ubergibt das erhaltene Signal an diese State-Variable (bzw. die Pointer-to-Member-Funktion) 
-    \item die Zust\"ande werten die Signale dann mittels switch-case aus
+   \item Zust\"ande werden durch \emph{typedef} einer Pointer-to-Member-Funktion mit einem Signal als Parameter repr\"asentiert:\newline
+   \textbf{typedef void (Kontext::*State)(unsigned const sig);}
+   \item Die dispatch-Methode \"ubergibt das erhaltene Signal an diese State-Variable (bzw. die Pointer-to-Member-Funktion) 
+   \item Die Zust\"ande werten die Signale dann mittels Switch-Case aus
   \end{itemize}
 \end{frame}
 
@@ -142,19 +143,20 @@ void dispatch(Signal sig){
 \begin{frame}[fragile]
   \frametitle{Beispiel einer Pointer-to-Member-Funktion}
   \begin{lstlisting}
-enum Signal{ Start, Stop }; //Eingangssignale
-//...
+enum Signal{ Start, Stop }; // Eingangssignale
+// ...
 void dispatch(unsigned const sig) {
-  this->*myState) (sig); } 
-//...
-void Kontext::running(Signal sig){
-  switch(sig){ //im Zustand running erhaltenes Signal pruefen
-    case Start: // da bereits srunning  ..
-    break; // ..-> keine Reaktion erforderlich
-  case Stop:
-    tran(sstopped); //Transition
-    stopped(); //cout << "stop"<<endl;
-    break;
+  (this->*myState) (sig);
+} 
+// ...
+void Kontext::srunning(Signal sig) {
+  switch(sig) { // In srunning das Signal pruefen
+    case Start: // Da bereits in srunning...
+      break;    // keine Reaktion erforderlich
+    case Stop:
+      tran(sstopped); // Transition
+      stopped();      // cout << "stop" << endl;
+      break;
   }
 }  
   \end{lstlisting}
@@ -166,16 +168,16 @@ void Kontext::running(Signal sig){
   \begin{itemize}
     \item Vorteile:
     \begin{itemize}
-      \item leicht verst\"andliche Struktur/ einfache Umsetzung
-      \item speicherschonend, da nur der state-Pointer gespeichert werden muss
+      \item Leicht verst\"andliche Struktur / einfache Umsetzung
+      \item Speicherschonend, da nur der state-Pointer gespeichert wird
       \item Code kann wiederverwendet werden, da der generische Teil (init, dispatch und tran-Methoden) in einer Klasse gekapselt werden kann
-      \item effizient, da ein switch-case-Level wegf\"allt
+      \item Effizient, da ein Switch-Case-Level wegf\"allt
       \item \"Anderungen im Automaten sind leicht umsetzbar
     \end{itemize}
     \item Nachteile
     \begin{itemize}
-      \item die verbliebene Switch-Case-Anweisung ist immernoch von der Anzahl Signale abg\"angig
-      \item nicht f\"ur hierarchische Automaten geeignet
+      \item Die verbliebene Switch-Case-Anweisung ist immernoch von der Anzahl der Signale abg\"angig
+      \item Nicht f\"ur Hierarchische Automaten geeignet
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -192,7 +194,7 @@ void Kontext::running(Signal sig){
 
 %% State Table Implementierung I
 \begin{frame}[fragile]
- \frametitle{Zustandstablle Implementierung I}
+ \frametitle{Zustandstabelle Implementierung I}
  \begin{lstlisting}
 // Zustaende
 enum states {
@@ -217,15 +219,15 @@ struct transition {
 
 %% State Table Implementierung II
 \begin{frame}[fragile]
- \frametitle{Zustandstablle Implementierung II}
+ \frametitle{Zustandstabelle Implementierung II}
  \begin{lstlisting}
-// Context Klasse
+// Kontext Klasse
 class conveyor {
   static void starten();
   static void stoppen();
   // Transitionstabelle
   static transition trans[];
-  // aktueller Zustand
+  // Aktueller Zustand
   states m_state;
  public:
   void do_action(input in);
@@ -243,8 +245,8 @@ transition conveyor::trans[] = {
 
 %% State Table Implementierung III
 \begin{frame}[fragile]
- \frametitle{Zustandstablle Implementierung III}
- \"Ubergangsfunktion in der Context Klasse
+ \frametitle{Zustandstabelle Implementierung III}
+ \"Ubergangsfunktion in der Kontext Klasse
  \begin{lstlisting}
 void conveyor::do_action(input in) {
   for (int i = 0; i < TRANS_COUNT; ++i) {
@@ -265,7 +267,7 @@ void conveyor::do_action(input in) {
 %% Diskussion
 \begin{frame}
  \frametitle{Vor- und Nachteile Zustandstabelle}
- \"Uberlegt euch kurz die Vor- und Nachteile dieser Implementierung (5 Min)
+ \"Uberlegt euch kurz die Vor- und Nachteile dieser Implementierung (5 Minuten)
 \end{frame}
 
 %% Vor- und Nachteile Zustandstabelle
@@ -275,7 +277,7 @@ void conveyor::do_action(input in) {
   \item Vorteile:
   \begin{itemize}
    \item Einfach zu Implementieren
-   \item Keine NOP Operationen/Funktionen notwenig
+   \item Keine NOP Operationen/Funktionen notwendig
    \item Tabelle hat nur so viele Eintr\"age wie \"Uberg\"ange
   \end{itemize}
   \item Nachteil:
@@ -314,7 +316,7 @@ struct transition {
 \begin{frame}
  \frametitle{Zustandsmatrix Implementierung II}
  \begin{itemize}
-  \item Deklaration in der Context Klasse ist nun ein 2 Dimmensionales Array!
+  \item Deklaration in der Kontext Klasse ist nun ein\newline zweidimensionales Array!
  \end{itemize}
  \includegraphics[scale=.4]{img/matrix_vim.png}
 \end{frame}
@@ -322,7 +324,7 @@ struct transition {
 %% Matrix Implementierung III
 \begin{frame}[fragile]
  \frametitle{Zustandsmatrix Implementierung III}
- \"Ubergangsfunktion in der Context Klasse
+ \"Ubergangsfunktion in der Kontext Klasse
  \begin{lstlisting}
 void conveyor::do_action(input in) {
   int dim1 = static_cast<int>(this->m_state);
@@ -337,7 +339,7 @@ void conveyor::do_action(input in) {
 
 %% Vor- und Nachteile Zustandstabelle
 \begin{frame}
- \frametitle{Vor- und Nachteile Zustandstablle}
+ \frametitle{Vor- und Nachteile Zustandsmatrix}
  \begin{itemize}
   \item Vorteile:
   \begin{itemize}
@@ -347,7 +349,7 @@ void conveyor::do_action(input in) {
   \item Nachteil:
   \begin{itemize}
    \item Schwerer zu implementieren
-   \item Matrix ben\"otigt insgesamt mehr Speicher da alle F\"alle auskodiert werden m\"ussen
+   \item Matrix ben\"otigt insgesamt mehr Speicher, da alle F\"alle auskodiert werden m\"ussen
    \item NOP Funktion ben\"otigt
   \end{itemize}
  \end{itemize}
@@ -360,7 +362,7 @@ void conveyor::do_action(input in) {
    \includegraphics[scale=.65]{img/GoF_pure.png}
  \end{center}
  \begin{itemize}
-  \item Kontext-Klasse (conveyor)
+  \item Kontext Klasse (conveyor)
   \item Zustands Basisklasse (state)
   \item Zust\"ande (running, stopped)
  \end{itemize}
@@ -368,10 +370,10 @@ void conveyor::do_action(input in) {
 
 %% GoF fsm States in Code I
 \begin{frame}
- \frametitle{GoF States in Code I}
+ \frametitle{GoF State Klasse}
  \begin{itemize}
   \item Alle States erben von einer Oberstate Klasse
-  \item Der Oberstate implementiert alle Events aller Zust\"ande als leere virtuelle Funktion
+  \item Der Oberstate implementiert alle Events aller Zust\"ande als leere virtuelle Funktionen
   \item Der jeweilige Zustand implementiert nur seine eigenen Events, nicht relevante
   Events werden an die leeren Methoden der Basisklasse weitergereicht
  \end{itemize}
@@ -381,7 +383,7 @@ void conveyor::do_action(input in) {
 \begin{frame}
  \frametitle{GoF Kontext Klasse}
  \begin{itemize}
-  \item Sicht von au{\ss}en auf die FSM
+  \item Sicht von Au{\ss}en auf die FSM
   \item Dient als Delegator zu den Zust\"anden
   \item Bedient alle Eingangssignale durch Funktionen
  \end{itemize}
@@ -395,7 +397,7 @@ class conveyor {
   friend class stopped;
   friend class running;
  public:
-  conveyor(): m_state(stopped::instance()) { }
+  conveyor() : m_state(stopped::instance()) { }
   void start();
   void stop();
  private:
@@ -429,12 +431,12 @@ class running : public state {
 \begin{frame}[fragile]
  \frametitle{GoF Implementierung III}
  \begin{lstlisting}
-// Zustandswechsel funktion
+// Zustandswechsel Funktion
 void conveyor::tran(state* target) {
   m_state = target;
 }
 
-// transition running -> stopped
+// Transition running -> stopped
 void running::stop(conveyor* context) {
   cout << "running: stop()" << endl;
   context->tran(stopped::instance());
@@ -445,11 +447,10 @@ void running::stop(conveyor* context) {
 
 %% Grundlagen GoF
 \begin{frame}
- \frametitle{Grundlagen GoF}
- Die klassiche GoF Implementierung hat einige schw\"achen
+ \frametitle{Schw\"achen des klassischen GoF State Pattern}
  \begin{itemize}
   \item Hoher Speicherverbrauch, da jeder Zustand im Speicher gehalten werden muss, auch wenn diese eigentlich nicht verwendet werden
-  \item Der h\"ohere Speicherverbrauch kann allerdings mit dem Placement New Operator umgangen werden
+  \item Der h\"ohere Speicherverbrauch kann allerdings mit dem \emph{Placement New} Operator umgangen werden
   \item Kontext muss eventuell immer mit \"ubergeben werden
  \end{itemize}
 \end{frame}
@@ -487,13 +488,13 @@ class stopped : public state {
 \begin{frame}[fragile]
  \frametitle{GoF States in Code (Implementierung)}
  \begin{lstlisting}
-// transition running -> stopped
+// Transition running -> stopped
 void running::stop() {
   new (this) stopped;
   cout << "stop() / stop" << endl;
 }
 
-// transition stopped -> running
+// Transition stopped -> running
 void stopped::start() {
   new (this) running;
   cout << "start() / run" << endl;
@@ -530,29 +531,29 @@ void conveyor::stop() {
 
 %% Schritte zum erstellen einer FSM
 \begin{frame}
- \frametitle{Schritte zum erstellen einer FSM}
+ \frametitle{Schritte zum Erstellen einer FSM}
  \begin{enumerate}
   \item Erstellen der Systemgrenzen
   \item Erstellen einer FSM
   \item Umwandlung in Code
   \begin{itemize}
-   \item Kontextklasse, Funktionsnamen als Eingangssignale
+   \item Kontext Klasse, Funktionsnamen als Eingangssignale
    \item Basisklasse f\"ur Zust\"ande erstellen
    \item Zustandsklassen erben von der Basisklasse und implementieren nur die eigenen Reaktionen neu
   \end{itemize}
-  \item Pr\"ufen ob Code und Systemgrenzen/Diagramm zusammenpassen
+  \item Pr\"ufen, ob Code und Systemgrenzen/Diagramm zusammenpassen
   \begin{itemize}
    \item Sind alle Eingangssignale als Funktionen zu finden?
    \item Werden alle Ausgangssignale verwendet/ausgegeben?
-   \item Die Namen f\"ur Eingangssignale/Ausgangssignale sollten konsistent sein, da Fehler sonst vorprogrammiert!
+   \item Die Namen f\"ur Eingangssignale/Ausgangssignale sollten konsistent sein, da Fehler sonst vorprogrammiert sind!
   \end{itemize}
  \end{enumerate}
 \end{frame}
 
 %% Übung GoF
 \begin{frame}
- \frametitle{\"Ubung Lichtschalter}
- Erstellt die Systemgrenzen, Automatendiagramm, und Code eines Lichtschalters (An und Aus Button). (15 Min)
+ \frametitle{\"Ubung: Lichtschalter}
+ Erstellt die Systemgrenzen, das Automatendiagramm und den Code eines Lichtschalters mit An- und Aus-Button (15 Minuten)
 \end{frame}
 
 %% Orthogonale Automaten I
@@ -611,20 +612,20 @@ void token_summary::del() {
 \begin{frame}
  \frametitle{Orthogonale Automaten in SE2P}
  \begin{itemize}
-  \item Jeder Puk/Token ist ein Automaten
-  \item Puks/Tokens m\"ussen verwaltet werden (bsp. token\_summary)
+  \item Jeder Puk/Token ist ein Automat
+  \item Puks/Tokens m\"ussen verwaltet werden (z.B. token\_summary)
  \end{itemize}
 \end{frame}
 
-%% Externe Statevariablen
+%% Externe State-Variablen
 \begin{frame}
- \frametitle{Externe Statevariablen}
+ \frametitle{Externe State-Variablen}
  \includegraphics[scale=.44]{img/fsm_externe_state_var.jpg}
 \end{frame}
 
-%% Implementierung von externen Statevariablen I
+%% Implementierung von externen State-Variablen I
 \begin{frame}[fragile]
- \frametitle{Implementierung von externen Statevariablen I}
+ \frametitle{Implementierung von externen State-Variablen I}
  \begin{lstlisting}
 class conveyor {
   friend class running;
@@ -645,9 +646,9 @@ class conveyor {
 \end{lstlisting}
 \end{frame}
 
-%% Implementierung von externen Statevariablen II
+%% Implementierung von externen State-Variablen II
 \begin{frame}[fragile]
- \frametitle{Implementierung von externen Statevariablen II}
+ \frametitle{Implementierung von externen State-Variablen II}
  Header:
  \begin{lstlisting}
 class state {
@@ -669,12 +670,12 @@ class stopped : public state {
  \end{lstlisting}
 \end{frame}
 
-%% Implementierung von externen Statevariablen III
+%% Implementierung von externen State-Variablen III
 \begin{frame}[fragile]
- \frametitle{Implementierung von externen Statevariablen III}
+ \frametitle{Implementierung von externen State-Variablen III}
  Implementierung:
  \begin{lstlisting}
-// transition stopped -> running
+// Transition stopped -> running
 void stopped::start(conveyor* context) {
   ++context->m_count_started;
   new (this) running;
@@ -699,7 +700,7 @@ void conveyor::start() {
  \frametitle{Guards Implementierung}
  Implementierung:
  \begin{lstlisting}
-// transition stopped -> running
+// Transition stopped -> running
 void stopped::start(conveyor* context) {
 
   ++context->m_count_started;
@@ -715,8 +716,8 @@ void stopped::start(conveyor* context) {
 
 %% Uebung Guards
 \begin{frame}
- \frametitle{\"Ubung Lichtschalter II}
- Implementieren sie einen Lichtschalter der nach mehrfachem bet\"atigen der Starttaste in ein anderes Licht wechselt (10 Min)
+ \frametitle{\"Ubung: Lichtschalter II}
+ Implementiert einen Lichtschalter, der nach mehrfachem Bet\"atigen der Starttaste in ein anderes Licht wechselt (10 Minuten)
 \end{frame}
 
 %% Entry/Exit Code 1
@@ -724,8 +725,8 @@ void stopped::start(conveyor* context) {
  \frametitle{Entry/Exit Code in HSM }
  \begin{itemize}
   \item Zustandswechsel d\"urfen Hierarchieebenen nicht \"uberspringen
-  \item exit() wird durchgef\"uhrt, wenn Signale in der Hierarchie "nach oben" weitergereicht werden
-  \item entry() wird  durchgef\"uhrt, wenn Signale in der Hierarchie "nach unten" weitergereicht werden
+  \item exit() wird durchgef\"uhrt, wenn Signale in der Hierarchie\newline "nach oben"\space weitergereicht werden
+  \item entry() wird durchgef\"uhrt, wenn Signale in der Hierarchie "nach unten"\space weitergereicht werden
  \end{itemize}
 \end{frame}
 
@@ -750,8 +751,8 @@ void stopped::start(conveyor* context) {
  }
  \end{lstlisting}
  \begin{itemize}
-  \item die exit-Funktion ist in jedem Zustand definiert
-  \item wenn auch der Top-Zustand nicht auf ein Signal reagiert, sollte dieser z.B. eine
+  \item Die exit-Funktion ist in jedem Zustand definiert
+  \item Wenn auch der Top-Zustand nicht auf ein Signal reagiert, sollte dieser z.B. eine
   failure-Methode haben, um den Fehler anzuzeigen
  \end{itemize}
 \end{frame}
@@ -769,10 +770,10 @@ void stopped::start(conveyor* context) {
 \begin{frame}[fragile]
  \frametitle{Entry/Exit Code in HSM }
  \begin{lstlisting}
-//State S1 erhaelt Signal b
+// State S1 erhaelt Signal b
 void StateS1::init(T* t) {
 
-  //t ist ein Pointer auf die Kontextklasse
+  // t ist ein Pointer auf die Kontext Klasse
   void* history = t->getStateFromHistory(StateS1ID);
 
   if(history != 0) {
@@ -789,9 +790,9 @@ void StateS1::init(T* t) {
 %% Entry Code 3
 \begin{frame}[fragile]
  \begin{itemize}
-  \item die entry-Funktion ist in jedem Zustand definiert
-  \item init() f\"uhrt dazu, dass -sofern ein Substate bereits in der History vorliegt- dieser direkt betreten wird; ansonsten wird er neu erzeugt
-  \item die init()-Funktion in der letzten Ebene ist leer
+  \item Die entry-Funktion ist in jedem Zustand definiert
+  \item init() f\"uhrt dazu, dass - sofern ein Substate bereits in der History vorliegt - dieser direkt betreten wird.\newline Ansonsten wird er neu erzeugt
+  \item Die init()-Funktion in der letzten Ebene ist leer
  \end{itemize}
 \end{frame}
 
@@ -800,9 +801,9 @@ void StateS1::init(T* t) {
  \frametitle{History}
  \begin{itemize}
   \item Implementierung der flachen History
-  \item die history-Funktion  wird in der exit-Funktion aufgerufen
-  \item die Kontextklasse h\"alt ein History- Array,
-  in dem sich die Subzust\"ande mittels history-Aufruf eintragen (Index-Zuordnung z.B. \"uber enums)
+  \item Die history-Funktion  wird in der exit-Funktion aufgerufen
+  \item Die Kontext Klasse h\"alt ein History-Array,
+  in dem sich die Subzust\"ande mittels history-Aufruf eintragen (Index-Zuordnung z.B. \"uber \emph{enums})
  \end{itemize}
 \end{frame}
 
@@ -813,15 +814,15 @@ void StateS1::init(T* t) {
   \item Beispiel: S1 tr\"agt sich in History-Tabelle ein
  \end{itemize}
  \begin{lstlisting}
-//StateS1 history-Funktion
-voidS StateS1::history(T* t) {
-  //t ist ein Pointer auf die Kontextklasse
+// StateS1 history-Funktion
+void StateS1::history(T* t) {
+  // t ist ein Pointer auf die Kontext Klasse
   t->setHistory(State::StateID::StateS1_ID,
                 this);
 }
  \end{lstlisting}
  \begin{itemize}
-  \item der Parameter StateS1ID gibt den Index in der History-Tabelle in der Kontextklasse an
+  \item Der Parameter StateS1\_ID gibt den Index in der History-Tabelle in der Kontext Klasse an
  \end{itemize}
 \end{frame}
 
@@ -829,7 +830,7 @@ voidS StateS1::history(T* t) {
 \begin{frame}[fragile]
  \frametitle{History}
  \begin{itemize}
-  \item setHistory in der Kontextklasse:
+  \item setHistory in der Kontext Klasse:
  \end{itemize}
  \begin{lstlisting}
   void setHistory(int ID, State* ptr) {
@@ -845,7 +846,7 @@ voidS StateS1::history(T* t) {
 \begin{frame}[fragile]
  \frametitle{History}
  \begin{itemize}
-  \item getStateFromHistory in der Kontextklasse:
+  \item getStateFromHistory in der Kontext Klasse:
  \end{itemize}
  \begin{lstlisting}
   void* getStateFromHistory(int ID) {
@@ -853,7 +854,7 @@ voidS StateS1::history(T* t) {
   }
  \end{lstlisting}
  \begin{itemize}
-  \item \"uber seine ID kann der Zustand sich seine History -sofern eine vorliegt- aus der History-Tabelle in der Kontextklasse holen
+  \item \"Uber seine ID kann der Zustand sich seine History - sofern eine vorliegt - aus der History-Tabelle in der Kontext Klasse holen
  \end{itemize}
 \end{frame}
 
@@ -904,7 +905,7 @@ voidS StateS1::history(T* t) {
 
 %% Timer 5
 \begin{frame}[fragile]
- \frametitle{Timer}
+ \frametitle{Timer Beispiel}
  Beispiel f\"ur die Erstellung eines Timers (1/2):
  \begin{lstlisting}
 // 1.
@@ -925,7 +926,7 @@ SIGEV_PULSE_INIT(
 
 %% Timer 6
 \begin{frame}[fragile]
- \frametitle{Timer}
+ \frametitle{Timer Beispiel}
  Beispiel f\"ur die Erstellung eines Timers (2/2):
  \begin{lstlisting}
 // 3. Create timer with realtime clock
@@ -964,15 +965,15 @@ if(SIGEV_GET_TYPE(&event) == SIGEV_PULSE)
  \frametitle{Pr\"ufungsfragen}
  \begin{itemize}
   \item Welche Arten von Implementierungen gibt es?
-  \item Wie geht man Schrittweise vor einen Automaten zu implementieren?
-  \item Was ist zu beachten bei Statevariablen und die Nachteile die dadurch entstehen?
+  \item Wie geht man schrittweise vor einen Automaten zu implementieren?
+  \item Was ist bei State-Variablen zu beachten und welche Nachteile entstehen dadurch?
   \item Wie geht man vor einen Timer zu implementieren?
-  \item Wie w\"urde ein Automat der Doppelklicks erkennt aussehen?
+  \item Wie w\"urde ein Automat, der Doppelklicks erkennt, aussehen?
  \end{itemize}
 \end{frame}
 
 \begin{frame}
- \frametitle{Beispielcode/Momentics Projekt}
+ \frametitle{Beispielcode / Momentics Projekt}
  Beispielcode + Momentics Projekt f\"ur das Timer Beispiel findet ihr in unserem Git-Repository:
  https://github.com/Hamdor/PLHSM2
 \end{frame}
